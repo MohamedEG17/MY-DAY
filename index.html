@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap");
     :root {
       --bg-1: #f7f8ff;
       --bg-2: #e8f1ff;
@@ -193,16 +194,25 @@
     .block-card.missed .status-pill { background:rgba(239,68,68,.20); color:#f87171; border-color:rgba(239,68,68,.34); }
     .block-card.dragging { z-index:50; box-shadow:0 34px 90px rgba(0,0,0,.30); opacity:.94; }
 
+    .block-head-row { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; width:100%; direction:rtl; }
+    .title-side { min-width:0; flex:1 1 auto; display:flex; align-items:flex-start; justify-content:flex-start; gap:10px; }
+    .title-stack { min-width:0; display:grid; gap:6px; }
+    .time-side { flex:0 0 auto; min-width:240px; display:grid; justify-items:start; gap:7px; text-align:right; direction:rtl; }
+    .time-badge { display:inline-flex; align-items:center; justify-content:center; width:fit-content; border-radius:18px; padding:10px 14px; background:color-mix(in srgb,var(--block-color) 22%,rgba(255,255,255,.16)); border:1px solid color-mix(in srgb,var(--block-color) 48%,var(--border)); color:var(--text); box-shadow:0 10px 28px color-mix(in srgb,var(--block-color) 18%,transparent); font-size:18px; line-height:1.35; font-weight:950; white-space:nowrap; }
+    .period-chip { display:inline-flex; align-items:center; width:fit-content; max-width:240px; border-radius:999px; padding:5px 10px; background:color-mix(in srgb,var(--block-color) 30%,transparent); border:1px solid color-mix(in srgb,var(--block-color) 44%,var(--border)); color:color-mix(in srgb,var(--block-color) 78%,var(--text)); font-size:13px; line-height:1.25; font-weight:950; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .status-pill.status-mini { min-height:34px; padding:6px 10px; font-size:13px; order:3; }
+
     .block-content { position:relative; z-index:2; display:grid; gap:12px; }
     .block-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .block-title { margin:0; font-size:25px; line-height:1.18; letter-spacing:-.5px; font-weight:900; word-break:break-word; }
+    .block-title { margin:0; font-size:32px; line-height:1.10; letter-spacing:-.7px; font-weight:950; word-break:break-word; color:color-mix(in srgb,var(--block-color) 74%,var(--text)); text-shadow:0 10px 28px color-mix(in srgb,var(--block-color) 16%,transparent); }
     .drag-handle { min-width:42px; height:42px; border-radius:16px; background:rgba(255,255,255,.14); border:1px solid var(--border); display:grid; place-items:center; font-size:20px; cursor:grab; color:var(--muted); flex:0 0 auto; }
     .time-pill, .status-pill, .repeat-pill { display:inline-flex; align-items:center; gap:7px; width:fit-content; border-radius:999px; padding:8px 12px; background:rgba(255,255,255,.14); border:1px solid var(--border); color:var(--muted); font-size:16px; font-weight:850; }
     .block-notes { margin:0; color:var(--muted); font-size:18px; line-height:1.6; font-weight:650; white-space:pre-wrap; word-break:break-word; }
     .block-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:4px; }
-    .mini-btn { min-height:42px; padding:8px 12px; border-radius:15px; background:rgba(255,255,255,.14); color:var(--text); border:1px solid var(--border); font-size:16px; font-weight:900; }
-    .mini-btn.done-btn { color:#22c55e; }
-    .mini-btn.miss-btn { color:#f87171; }
+    .mini-btn { min-height:36px; padding:7px 10px; border-radius:13px; background:rgba(255,255,255,.13); color:var(--text); border:1px solid var(--border); font-size:14px; font-weight:950; }
+    .mini-btn.done-btn { color:#052e16; background:linear-gradient(135deg,rgba(34,197,94,.88),rgba(21,128,61,.72)); border-color:rgba(34,197,94,.38); }
+    .mini-btn.miss-btn { color:#450a0a; background:linear-gradient(135deg,rgba(248,113,113,.86),rgba(220,38,38,.70)); border-color:rgba(248,113,113,.38); }
+    [data-theme="dark"] .mini-btn.done-btn, [data-theme="dark"] .mini-btn.miss-btn { color:#fff; }
     .mini-btn:hover { transform:translateY(-1px); }
 
     .task-list { display:grid; gap:8px; margin:2px 0; }
@@ -284,7 +294,13 @@
       .board-head p { font-size:16px; }
       .board { min-height:720px; border-radius:22px; }
       .block-card { width:calc(100% - 24px) !important; max-width:calc(100% - 24px); min-height:188px; padding:16px; border-radius:24px; }
-      .block-title { font-size:23px; }
+      .block-title { font-size:28px; }
+      .block-head-row { flex-direction:column; align-items:stretch; gap:10px; }
+      .title-side { justify-content:space-between; width:100%; }
+      .time-side { min-width:0; justify-items:start; }
+      .time-badge { font-size:15px; padding:8px 11px; white-space:normal; text-align:right; }
+      .period-chip { max-width:100%; font-size:12px; }
+      .mobile-bottom button { font-size:14px; min-height:50px; }
       .block-notes { font-size:18px; }
       .task-item { font-size:17px; }
       .form-grid { grid-template-columns:1fr; }
@@ -379,6 +395,10 @@
         <div class="form-row full">
           <label for="blockTitle">اسم البلوك</label>
           <input id="blockTitle" required placeholder="مثال: شغل / جيم / مذاكرة" />
+        </div>
+        <div class="form-row full">
+          <label for="periodLabel">تسمية الفترة الزمنية <small style="opacity:.7">(اختياري)</small></label>
+          <input id="periodLabel" placeholder="مثال: شغل صباحي / تركيز / مراجعة / راحة" />
         </div>
         <div class="form-row">
           <label for="startTime">من الساعة</label>
@@ -475,16 +495,14 @@
   <div id="toast" class="toast hidden"></div>
 
   <script>
-    const SQL_SCHEMA = `do $$ begin
-  create type block_status as enum ('pending', 'done', 'missed');
-exception when duplicate_object then null;
-end $$;
+    const SQL_SCHEMA = `create type if not exists block_status as enum ('pending', 'done', 'missed');
 
 create table if not exists public.recurring_blocks (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   title text not null,
   notes text default '',
+  period_label text default '',
   start_time time not null,
   end_time time not null,
   days_of_week smallint[] not null default array[0,1,2,3,4,5,6],
@@ -505,6 +523,7 @@ create table if not exists public.recurring_blocks (
 alter table public.recurring_blocks add column if not exists repeat_mode text not null default 'everyday';
 alter table public.recurring_blocks add column if not exists block_date date;
 alter table public.recurring_blocks add column if not exists tasks jsonb not null default '[]'::jsonb;
+alter table public.recurring_blocks add column if not exists period_label text default '';
 alter table public.recurring_blocks add column if not exists days_of_week smallint[] not null default array[0,1,2,3,4,5,6];
 alter table public.recurring_blocks add column if not exists sort_order integer default 0;
 
@@ -515,6 +534,7 @@ create table if not exists public.block_overrides (
   override_date date not null,
   title text,
   notes text,
+  period_label text,
   start_time time,
   end_time time,
   color text,
@@ -553,6 +573,8 @@ create table if not exists public.task_checks (
 );
 
 alter table public.recurring_blocks enable row level security;
+alter table public.block_overrides add column if not exists period_label text;
+
 alter table public.block_overrides enable row level security;
 alter table public.block_completions enable row level security;
 alter table public.task_checks enable row level security;
@@ -614,6 +636,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       blockForm: document.getElementById('blockForm'),
       modalTitle: document.getElementById('modalTitle'),
       blockTitle: document.getElementById('blockTitle'),
+      periodLabel: document.getElementById('periodLabel'),
       startTime: document.getElementById('startTime'),
       endTime: document.getElementById('endTime'),
       blockNotes: document.getElementById('blockNotes'),
@@ -653,6 +676,18 @@ create policy "Users can delete own task checks" on public.task_checks for delet
     function pad(n) { return String(n).padStart(2, '0'); }
     function dateKey(d = state.currentDate) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
     function toTime(t) { return (t || '').slice(0,5); }
+    function formatTimeArabic(t) {
+      const [hhRaw, mmRaw] = toTime(t || '00:00').split(':');
+      let hh = Number(hhRaw || 0);
+      const mm = String(mmRaw || '00').padStart(2, '0');
+      const suffix = hh < 12 ? 'صباحًا' : 'مساءً';
+      let displayHour = hh % 12;
+      if (displayHour === 0) displayHour = 12;
+      return `${displayHour}:${mm} ${suffix}`;
+    }
+    function formatTimeRangeArabic(start, end) {
+      return `من ${formatTimeArabic(start)} إلى ${formatTimeArabic(end)}`;
+    }
     function formatDateTitle(d) { return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); }
     function formatDateSubtitle(d) { return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
     function uid() { return (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2)); }
@@ -674,6 +709,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       return {
         id: b.id || uid(),
         title: b.title || 'بلوك جديد',
+        period_label: b.period_label || '',
         notes: b.notes || '',
         tasks: Array.isArray(b.tasks) ? b.tasks.map(normalizeTask).filter(t => t.text.trim()) : [],
         start_time: toTime(b.start_time) || '09:00',
@@ -707,9 +743,9 @@ create policy "Users can delete own task checks" on public.task_checks for delet
 
     function sampleTemplates() {
       return [
-        normalizeTemplate({ id: uid(), title: 'شغل عميق', notes: 'أهم تاسكات اليوم بدون مشتتات', tasks:[{id:taskId(), text:'افتح التاسكات المطلوبة'}, {id:taskId(), text:'سلّم أول نسخة'}], start_time:'09:00', end_time:'13:00', color:'#6366f1', position_x:32, position_y:32, repeat_mode:'everyday' }),
+        normalizeTemplate({ id: uid(), title: 'شغل عميق', period_label:'تركيز', notes: 'أهم تاسكات اليوم بدون مشتتات', tasks:[{id:taskId(), text:'افتح التاسكات المطلوبة'}, {id:taskId(), text:'سلّم أول نسخة'}], start_time:'09:00', end_time:'13:00', color:'#6366f1', position_x:32, position_y:32, repeat_mode:'everyday' }),
         normalizeTemplate({ id: uid(), title: 'راحة وغدا', notes: 'فصل بسيط وإعادة شحن', tasks:[], start_time:'13:00', end_time:'14:00', color:'#0ea5e9', position_x:400, position_y:64, repeat_mode:'everyday' }),
-        normalizeTemplate({ id: uid(), title: 'مراجعة وتسليمات', notes: 'مراجعة التاسكات والفايلات المطلوبة', tasks:[{id:taskId(), text:'مراجعة الفايلات'}, {id:taskId(), text:'إرسال التسليم'}], start_time:'17:00', end_time:'20:00', color:'#ec4899', position_x:160, position_y:270, repeat_mode:'everyday' })
+        normalizeTemplate({ id: uid(), title: 'مراجعة وتسليمات', period_label:'مراجعة', notes: 'مراجعة التاسكات والفايلات المطلوبة', tasks:[{id:taskId(), text:'مراجعة الفايلات'}, {id:taskId(), text:'إرسال التسليم'}], start_time:'17:00', end_time:'20:00', color:'#ec4899', position_x:160, position_y:270, repeat_mode:'everyday' })
       ];
     }
 
@@ -768,6 +804,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       return normalizeTemplate({
         id: row.id,
         title: row.title,
+        period_label: row.period_label || '',
         notes: row.notes || '',
         start_time: toTime(row.start_time),
         end_time: toTime(row.end_time),
@@ -790,6 +827,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
         id: block.id,
         user_id: state.user.id,
         title: block.title,
+        period_label: block.period_label || '',
         notes: block.notes || '',
         start_time: block.start_time,
         end_time: block.end_time,
@@ -812,6 +850,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
         recurring_block_id: blockId,
         override_date: day,
         title: over.title ?? null,
+        period_label: over.period_label ?? null,
         notes: over.notes ?? null,
         start_time: over.start_time ?? null,
         end_time: over.end_time ?? null,
@@ -939,6 +978,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       const day = dateKey();
       const data = {
         title: block.title,
+        period_label: block.period_label || '',
         notes: block.notes || '',
         start_time: block.start_time,
         end_time: block.end_time,
@@ -1102,6 +1142,8 @@ create policy "Users can delete own task checks" on public.task_checks for delet
 
     function createBlockCard(block, board) {
       const status = getStatus(block.id);
+      const statusLabel = statusText(status);
+      const period = (block.period_label || '').trim();
       const card = document.createElement('article');
       card.className = `block-card ${status === 'done' ? 'done' : ''} ${status === 'missed' ? 'missed' : ''}`;
       card.style.setProperty('--block-color', block.color);
@@ -1111,22 +1153,31 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       card.dataset.id = block.id;
       card.innerHTML = `
         <div class="block-content">
-          <div class="block-top">
-            <h4 class="block-title"></h4>
-            <button class="drag-handle" type="button" title="Drag">⌘</button>
+          <div class="block-head-row">
+            <div class="title-side">
+              <div class="title-stack">
+                <h4 class="block-title"></h4>
+              </div>
+              <button class="drag-handle" type="button" title="Drag">⌘</button>
+            </div>
+            <div class="time-side">
+              ${period ? `<span class="period-chip"></span>` : ''}
+              <span class="time-badge">${formatTimeRangeArabic(block.start_time, block.end_time)}</span>
+            </div>
           </div>
-          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="repeat-pill">${repeatText(block)}</span></div>
           <p class="block-notes"></p>
           ${renderTaskList(block)}
-          <div><span class="status-pill">${statusText(status)}</span></div>
           <div class="block-actions">
             <button class="mini-btn done-btn" type="button" data-action="done">✓ عملت</button>
             <button class="mini-btn miss-btn" type="button" data-action="missed">✕ ماتعملش</button>
             <button class="mini-btn" type="button" data-action="pending">Reset</button>
             <button class="mini-btn" type="button" data-action="edit">تعديل</button>
+            <span class="status-pill status-mini">${statusLabel}</span>
           </div>
         </div>`;
       card.querySelector('.block-title').textContent = block.title;
+      const periodEl = card.querySelector('.period-chip');
+      if (periodEl) periodEl.textContent = period;
       card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
       hydrateTaskText(card, block);
       card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
@@ -1178,7 +1229,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
 
     function renderList(blocks) {
       els.viewTitle.textContent = 'قائمة اليوم';
-      els.viewHint.textContent = 'أفضل وضع للموبايل: كروت كبيرة وواضحة مع Done / Missed و checkboxes.';
+      els.viewHint.textContent = 'لا تؤجل عمل اليوم إلى الغد، فالأيام تمضي ولا تعود ';
       const list = document.createElement('div');
       list.className = 'list-view';
       if (!blocks.length) {
@@ -1187,12 +1238,22 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       }
       blocks.forEach(block => {
         const status = getStatus(block.id);
+        const period = (block.period_label || '').trim();
         const card = document.createElement('article');
         card.className = `list-card ${status}`;
         card.style.setProperty('--block-color', block.color);
         card.innerHTML = `
-          <h4 class="block-title"></h4>
-          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="repeat-pill">${repeatText(block)}</span> <span class="status-pill">${statusText(status)}</span></div>
+          <div class="block-head-row">
+            <div class="title-side">
+              <div class="title-stack">
+                <h4 class="block-title"></h4>
+              </div>
+            </div>
+            <div class="time-side">
+              ${period ? `<span class="period-chip"></span>` : ''}
+              <span class="time-badge">${formatTimeRangeArabic(block.start_time, block.end_time)}</span>
+            </div>
+          </div>
           <p class="block-notes"></p>
           ${renderTaskList(block)}
           <div class="block-actions">
@@ -1200,8 +1261,11 @@ create policy "Users can delete own task checks" on public.task_checks for delet
             <button class="mini-btn miss-btn" data-action="missed">✕ ماتعملش</button>
             <button class="mini-btn" data-action="pending">Reset</button>
             <button class="mini-btn" data-action="edit">تعديل</button>
+            <span class="status-pill status-mini">${statusText(status)}</span>
           </div>`;
         card.querySelector('.block-title').textContent = block.title;
+        const periodEl = card.querySelector('.period-chip');
+        if (periodEl) periodEl.textContent = period;
         card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
         hydrateTaskText(card, block);
         card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
@@ -1232,7 +1296,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
           const mini = document.createElement('div');
           mini.className = 'week-mini-block';
           mini.style.borderInlineStart = `6px solid ${block.color}`;
-          mini.innerHTML = `<strong></strong><span>${toTime(block.start_time)} - ${toTime(block.end_time)}</span>`;
+          mini.innerHTML = `<strong></strong><span>${formatTimeRangeArabic(block.start_time, block.end_time)}</span>`;
           mini.querySelector('strong').textContent = block.title;
           col.appendChild(mini);
         });
@@ -1261,6 +1325,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       const template = id ? getTemplate(id) : null;
       els.modalTitle.textContent = block ? 'تعديل البلوك' : 'إضافة بلوك';
       els.blockTitle.value = block?.title || '';
+      if (els.periodLabel) els.periodLabel.value = block?.period_label || '';
       els.startTime.value = toTime(block?.start_time) || '09:00';
       els.endTime.value = toTime(block?.end_time) || '10:00';
       els.blockNotes.value = block?.notes || '';
@@ -1292,6 +1357,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
         const block = {
           ...visible,
           title: els.blockTitle.value.trim(),
+          period_label: els.periodLabel ? els.periodLabel.value.trim() : '',
           start_time: els.startTime.value,
           end_time: els.endTime.value,
           notes: els.blockNotes.value.trim(),
@@ -1309,6 +1375,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       const block = normalizeTemplate({
         id: uid(),
         title: els.blockTitle.value.trim(),
+        period_label: els.periodLabel ? els.periodLabel.value.trim() : '',
         start_time: els.startTime.value,
         end_time: els.endTime.value,
         notes: els.blockNotes.value.trim(),
