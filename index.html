@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#111827" />
   <title>Time Blocking System</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-1: #f7f8ff;
@@ -27,7 +30,7 @@
       --radius-xl: 32px;
       --radius-lg: 24px;
       --radius-md: 18px;
-      --font: "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font: "IBM Plex Sans Arabic", "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     [data-theme="dark"] {
@@ -704,21 +707,21 @@
     }
 
     @media (max-width: 1080px) {
-      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 96px; }
+      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 18px; }
       .sidebar { display: none; }
-      .topbar { top: 12px; min-height: auto; padding: 16px; align-items: flex-start; }
+      .topbar { position: static; top: auto; min-height: auto; padding: 16px; align-items: flex-start; }
       .date-area h2 { font-size: 34px; }
       .top-actions .desktop-only { display: none; }
       .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .board { min-height: 620px; }
-      .mobile-bottom { display: flex; }
+      .mobile-bottom { display: flex; position: static; inset-inline: auto; bottom: auto; margin: 0 12px calc(12px + env(safe-area-inset-bottom)); width: auto; }
       .week-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 680px) {
       body::before { display: none; }
-      .app-shell { padding: 10px; padding-bottom: 94px; }
-      .topbar { border-radius: 26px; flex-direction: column; gap: 14px; position: sticky; }
+      .app-shell { padding: 10px; padding-bottom: 12px; }
+      .topbar { border-radius: 26px; flex-direction: column; gap: 14px; position: static; top: auto; }
       .top-actions { width: 100%; justify-content: stretch; }
       .top-actions button { flex: 1; }
       .date-area h2 { font-size: 30px; line-height: 1.12; }
