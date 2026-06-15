@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111827" />
+  <meta name="theme-color" content="#101527" />
   <title>Time Blocking System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -12,14 +15,14 @@
       --bg-2: #e8f1ff;
       --bg-3: #fff5fb;
       --text: #101828;
-      --muted: rgba(16,24,40,.68);
-      --muted-2: rgba(16,24,40,.48);
-      --panel: rgba(255,255,255,.56);
-      --panel-strong: rgba(255,255,255,.78);
+      --muted: rgba(16,24,40,.70);
+      --muted-2: rgba(16,24,40,.50);
+      --panel: rgba(255,255,255,.58);
+      --panel-strong: rgba(255,255,255,.80);
       --border: rgba(15,23,42,.12);
-      --shadow: 0 24px 80px rgba(31, 41, 55, .16);
-      --shadow-soft: 0 14px 35px rgba(31, 41, 55, .12);
-      --field: rgba(255,255,255,.55);
+      --shadow: 0 26px 85px rgba(31, 41, 55, .16);
+      --shadow-soft: 0 16px 42px rgba(31, 41, 55, .12);
+      --field: rgba(255,255,255,.56);
       --danger: #ef4444;
       --success: #16a34a;
       --warning: #f59e0b;
@@ -27,7 +30,7 @@
       --radius-xl: 32px;
       --radius-lg: 24px;
       --radius-md: 18px;
-      --font: "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font: "IBM Plex Sans Arabic", "Cairo", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     [data-theme="dark"] {
@@ -35,14 +38,14 @@
       --bg-2: #101527;
       --bg-3: #180f22;
       --text: #f8fafc;
-      --muted: rgba(248,250,252,.72);
-      --muted-2: rgba(248,250,252,.48);
-      --panel: rgba(15,23,42,.48);
-      --panel-strong: rgba(15,23,42,.72);
-      --border: rgba(255,255,255,.12);
-      --shadow: 0 24px 85px rgba(0,0,0,.42);
-      --shadow-soft: 0 18px 45px rgba(0,0,0,.32);
-      --field: rgba(255,255,255,.08);
+      --muted: rgba(248,250,252,.74);
+      --muted-2: rgba(248,250,252,.52);
+      --panel: rgba(15,23,42,.50);
+      --panel-strong: rgba(15,23,42,.76);
+      --border: rgba(255,255,255,.13);
+      --shadow: 0 26px 90px rgba(0,0,0,.44);
+      --shadow-soft: 0 18px 45px rgba(0,0,0,.34);
+      --field: rgba(255,255,255,.085);
       --accent: #8b5cf6;
     }
 
@@ -66,7 +69,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .42;
+      opacity: .22;
       background-image: radial-gradient(rgba(255,255,255,.24) 1px, transparent 1px);
       background-size: 34px 34px;
       mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 70%, transparent);
@@ -106,47 +109,12 @@
       overflow: hidden;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      direction: ltr;
-      justify-content: flex-end;
-    }
+    .brand { display:flex; align-items:center; gap:14px; direction:ltr; justify-content:flex-end; }
+    .brand-mark { width:54px; height:54px; flex:0 0 54px; border-radius:20px; background:linear-gradient(135deg,#8b5cf6,#06b6d4 55%,#f472b6); box-shadow:0 18px 45px rgba(99,102,241,.34); display:grid; place-items:center; color:#fff; font-weight:900; font-size:24px; }
+    .brand h1 { margin:0; font-size:28px; line-height:1.05; letter-spacing:-.7px; }
+    .brand p { margin:4px 0 0; color:var(--muted); font-size:16px; line-height:1.3; }
 
-    .brand-mark {
-      width: 54px;
-      height: 54px;
-      flex: 0 0 54px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #8b5cf6, #06b6d4 55%, #f472b6);
-      box-shadow: 0 18px 45px rgba(99,102,241,.34);
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 900;
-      font-size: 24px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.05;
-      letter-spacing: -.7px;
-    }
-
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.3;
-    }
-
-    .nav {
-      display: grid;
-      gap: 10px;
-    }
-
+    .nav { display:grid; gap:10px; }
     .nav button, .soft-btn, .primary-btn, .icon-btn {
       color: var(--text);
       border-radius: 18px;
@@ -161,484 +129,173 @@
       font-size: 17px;
     }
 
-    .nav button {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      text-align: right;
-    }
+    .nav button { display:flex; align-items:center; justify-content:space-between; text-align:right; }
+    .nav button.active, .primary-btn { background:linear-gradient(135deg,rgba(99,102,241,.94),rgba(14,165,233,.84)); color:#fff; border-color:rgba(255,255,255,.18); box-shadow:0 18px 40px rgba(99,102,241,.28); }
+    .nav button:hover, .soft-btn:hover, .primary-btn:hover, .icon-btn:hover { transform:translateY(-1px); }
 
-    .nav button.active, .primary-btn {
-      background: linear-gradient(135deg, rgba(99,102,241,.92), rgba(14,165,233,.82));
-      color: white;
-      border-color: rgba(255,255,255,.18);
-      box-shadow: 0 18px 40px rgba(99,102,241,.28);
-    }
+    .sidebar-footer { margin-top:auto; display:grid; gap:12px; }
+    .sync-card { border-radius:24px; padding:16px; background:var(--field); border:1px solid var(--border); }
+    .sync-card .label { font-size:15px; color:var(--muted); margin-bottom:6px; }
+    .sync-status { font-size:18px; font-weight:900; display:flex; align-items:center; gap:8px; }
+    .dot { width:10px; height:10px; border-radius:99px; background:var(--warning); display:inline-block; }
+    .dot.cloud { background:var(--success); }
+    .dot.offline { background:var(--muted-2); }
 
-    .nav button:hover, .soft-btn:hover, .primary-btn:hover, .icon-btn:hover { transform: translateY(-1px); }
+    .main { display:flex; flex-direction:column; gap:18px; min-width:0; }
+    .topbar { min-height:112px; border-radius:var(--radius-xl); padding:20px; display:flex; align-items:center; justify-content:space-between; gap:16px; position:sticky; top:18px; z-index:20; }
+    .date-area h2 { margin:0; font-size:42px; line-height:1.05; letter-spacing:-1px; }
+    .date-area p { margin:10px 0 0; color:var(--muted); font-size:18px; font-weight:700; }
+    .top-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-start; }
+    .icon-btn { min-width:52px; padding-inline:14px; font-size:20px; }
 
-    .sidebar-footer {
-      margin-top: auto;
-      display: grid;
-      gap: 12px;
-    }
+    .mobile-bottom { display:none; border-radius:26px; padding:10px; gap:8px; justify-content:space-between; }
+    .mobile-bottom button { flex:1; min-height:56px; border-radius:18px; font-size:17px; padding:8px; white-space:nowrap; }
 
-    .sync-card {
-      border-radius: 24px;
-      padding: 16px;
-      background: var(--field);
-      border: 1px solid var(--border);
-    }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .stat-card { border-radius:26px; padding:18px; min-height:118px; display:grid; align-content:space-between; }
+    .stat-card span { color:var(--muted); font-size:16px; font-weight:800; }
+    .stat-card strong { font-size:42px; line-height:1; letter-spacing:-1px; }
 
-    .sync-card .label { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
-    .sync-status { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-    .dot { width: 10px; height: 10px; border-radius: 99px; background: var(--warning); display: inline-block; }
-    .dot.cloud { background: var(--success); }
-    .dot.offline { background: var(--muted-2); }
+    .board-wrap { border-radius:var(--radius-xl); padding:18px; min-height:650px; }
+    .board-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:16px; }
+    .board-head h3 { margin:0; font-size:32px; letter-spacing:-.7px; }
+    .board-head p { margin:8px 0 0; color:var(--muted); font-size:18px; line-height:1.6; font-weight:750; }
 
-    .main {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      min-width: 0;
-    }
-
-    .topbar {
-      min-height: 112px;
-      border-radius: var(--radius-xl);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      position: sticky;
-      top: 18px;
-      z-index: 20;
-    }
-
-    .date-area h2 {
-      margin: 0;
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.02;
-      letter-spacing: -1.4px;
-    }
-
-    .date-area p { margin: 8px 0 0; color: var(--muted); font-size: 18px; font-weight: 700; }
-
-    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-
-    .icon-btn {
-      min-width: 50px;
-      min-height: 50px;
-      padding: 0 14px;
-      display: inline-grid;
-      place-items: center;
-      font-size: 20px;
-    }
-
-    .primary-btn { min-height: 54px; padding: 13px 20px; font-size: 18px; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 14px;
-    }
-
-    .stat-card {
-      border-radius: 26px;
-      padding: 18px;
-      min-height: 116px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::after {
-      content: "";
-      position: absolute;
-      width: 125px;
-      height: 125px;
-      border-radius: 50%;
-      left: -40px;
-      bottom: -55px;
-      background: radial-gradient(circle, rgba(99,102,241,.25), transparent 65%);
-    }
-
-    .stat-card span { color: var(--muted); font-size: 16px; font-weight: 800; }
-    .stat-card strong { display: block; margin-top: 10px; font-size: 38px; line-height: 1; letter-spacing: -1px; }
-
-    .board-wrap {
-      border-radius: var(--radius-xl);
-      min-height: calc(100vh - 286px);
-      padding: 18px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .board-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .board-head h3 { margin: 0; font-size: 28px; letter-spacing: -.5px; }
-    .board-head p { margin: 5px 0 0; color: var(--muted); font-size: 17px; font-weight: 700; }
-
-    .board {
-      position: relative;
-      min-height: 680px;
-      border-radius: 28px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 12% 18%, rgba(255,255,255,.16), transparent 24%),
-        linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.035));
-      border: 1px solid var(--border);
-    }
-
-    .empty-state {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .empty-state .box {
-      max-width: 520px;
-      padding: 28px;
-      border-radius: 30px;
-      background: var(--field);
-      border: 1px solid var(--border);
-    }
-    .empty-state h3 { margin: 0; font-size: 32px; }
-    .empty-state p { color: var(--muted); font-size: 19px; line-height: 1.7; margin: 12px 0 0; }
+    .board { position:relative; min-height:680px; border-radius:28px; background:rgba(255,255,255,.03); border:1px solid var(--border); overflow:hidden; }
+    .empty-state { position:absolute; inset:0; display:grid; place-items:center; padding:24px; text-align:center; pointer-events:none; }
+    .empty-state .box { max-width:520px; padding:28px; border-radius:30px; background:var(--field); border:1px solid var(--border); }
+    .empty-state h3 { margin:0; font-size:32px; }
+    .empty-state p { color:var(--muted); font-size:19px; line-height:1.7; margin:12px 0 0; }
 
     .block-card {
-      position: absolute;
-      width: 330px;
-      min-height: 172px;
-      border-radius: 28px;
-      padding: 18px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.32), rgba(255,255,255,.08));
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(24px) saturate(170%);
-      -webkit-backdrop-filter: blur(24px) saturate(170%);
-      touch-action: none;
-      user-select: none;
-      transition: box-shadow .18s ease, opacity .18s ease, transform .1s ease, filter .18s ease;
-      overflow: hidden;
+      position:absolute;
+      width:340px;
+      min-height:188px;
+      border-radius:28px;
+      padding:18px;
+      background:linear-gradient(135deg,rgba(255,255,255,.32),rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(24px) saturate(170%);
+      -webkit-backdrop-filter:blur(24px) saturate(170%);
+      touch-action:none;
+      user-select:none;
+      transition:box-shadow .18s ease, opacity .18s ease, transform .1s ease, filter .18s ease, border .18s ease, background .18s ease;
+      overflow:hidden;
     }
+    .block-card::before { content:""; position:absolute; inset-inline-start:0; top:0; bottom:0; width:8px; background:var(--block-color,#6366f1); }
+    .block-card::after { content:""; position:absolute; width:160px; height:160px; border-radius:999px; left:-60px; top:-70px; background:color-mix(in srgb, var(--block-color) 34%, transparent); pointer-events:none; }
+    .block-card.done { border-color:rgba(22,163,74,.55); background:linear-gradient(135deg,rgba(22,163,74,.26),rgba(255,255,255,.08)); box-shadow:0 20px 55px rgba(22,163,74,.20); }
+    .block-card.done::before { background:var(--success); width:10px; }
+    .block-card.done .status-pill { background:rgba(22,163,74,.20); color:#22c55e; border-color:rgba(22,163,74,.34); }
+    .block-card.missed { border-color:rgba(239,68,68,.55); background:linear-gradient(135deg,rgba(239,68,68,.24),rgba(255,255,255,.07)); box-shadow:0 20px 55px rgba(239,68,68,.18); }
+    .block-card.missed::before { background:var(--danger); width:10px; }
+    .block-card.missed .status-pill { background:rgba(239,68,68,.20); color:#f87171; border-color:rgba(239,68,68,.34); }
+    .block-card.dragging { z-index:50; box-shadow:0 34px 90px rgba(0,0,0,.30); opacity:.94; }
 
-    .block-card::before {
-      content: "";
-      position: absolute;
-      inset-inline-start: 0;
-      top: 0;
-      bottom: 0;
-      width: 8px;
-      background: var(--block-color, #6366f1);
-    }
+    .block-content { position:relative; z-index:2; display:grid; gap:12px; }
+    .block-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .block-title { margin:0; font-size:25px; line-height:1.18; letter-spacing:-.5px; font-weight:900; word-break:break-word; }
+    .drag-handle { min-width:42px; height:42px; border-radius:16px; background:rgba(255,255,255,.14); border:1px solid var(--border); display:grid; place-items:center; font-size:20px; cursor:grab; color:var(--muted); flex:0 0 auto; }
+    .time-pill, .status-pill, .repeat-pill { display:inline-flex; align-items:center; gap:7px; width:fit-content; border-radius:999px; padding:8px 12px; background:rgba(255,255,255,.14); border:1px solid var(--border); color:var(--muted); font-size:16px; font-weight:850; }
+    .block-notes { margin:0; color:var(--muted); font-size:18px; line-height:1.6; font-weight:650; white-space:pre-wrap; word-break:break-word; }
+    .block-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:4px; }
+    .mini-btn { min-height:42px; padding:8px 12px; border-radius:15px; background:rgba(255,255,255,.14); color:var(--text); border:1px solid var(--border); font-size:16px; font-weight:900; }
+    .mini-btn.done-btn { color:#22c55e; }
+    .mini-btn.miss-btn { color:#f87171; }
+    .mini-btn:hover { transform:translateY(-1px); }
 
-    .block-card::after {
-      content: "";
-      position: absolute;
-      width: 160px;
-      height: 160px;
-      border-radius: 999px;
-      left: -60px;
-      top: -70px;
-      background: color-mix(in srgb, var(--block-color) 34%, transparent);
-      pointer-events: none;
-    }
+    .task-list { display:grid; gap:8px; margin:2px 0; }
+    .task-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:16px; background:rgba(255,255,255,.09); border:1px solid var(--border); color:var(--text); font-size:17px; line-height:1.5; font-weight:700; }
+    .task-item input { width:22px; min-height:22px; height:22px; margin-top:2px; accent-color:var(--success); flex:0 0 auto; }
+    .task-item span { flex:1; word-break:break-word; }
+    .task-item.done span { text-decoration:line-through; opacity:.70; }
 
-    .block-card.dragging { z-index: 50; box-shadow: 0 34px 90px rgba(0,0,0,.30); opacity: .94; }
-    .block-card.done { filter: saturate(.92); }
-    .block-card.done .status-pill { background: rgba(22,163,74,.18); color: var(--success); }
-    .block-card.missed { filter: saturate(.7); opacity: .82; }
-    .block-card.missed .status-pill { background: rgba(239,68,68,.16); color: var(--danger); }
-
-    .block-content { position: relative; z-index: 2; display: grid; gap: 12px; }
-
-    .block-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .block-title {
-      margin: 0;
-      font-size: 25px;
-      line-height: 1.18;
-      letter-spacing: -.5px;
-      font-weight: 950;
-      word-break: break-word;
-    }
-
-    .drag-handle {
-      min-width: 42px;
-      height: 42px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.14);
-      border: 1px solid var(--border);
-      display: grid;
-      place-items: center;
-      font-size: 20px;
-      cursor: grab;
-      color: var(--muted);
-      flex: 0 0 auto;
-    }
-
-    .time-pill, .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      width: fit-content;
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(255,255,255,.14);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 16px;
-      font-weight: 900;
-    }
-
-    .block-notes {
-      margin: 0;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.55;
-      font-weight: 700;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .block-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-top: 4px;
-    }
-
-    .mini-btn {
-      min-height: 42px;
-      padding: 8px 12px;
-      border-radius: 15px;
-      background: rgba(255,255,255,.14);
-      color: var(--text);
-      border: 1px solid var(--border);
-      font-size: 16px;
-      font-weight: 950;
-    }
-    .mini-btn.done-btn { color: var(--success); }
-    .mini-btn.miss-btn { color: var(--danger); }
-    .mini-btn:hover { transform: translateY(-1px); }
-
-    .list-view {
-      display: grid;
-      gap: 12px;
-    }
-
-    .list-card {
-      border-radius: 26px;
-      padding: 18px;
-      display: grid;
-      gap: 12px;
-      background: var(--field);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
+    .list-view { display:grid; gap:12px; }
+    .list-card { border-radius:26px; padding:18px; display:grid; gap:12px; background:var(--field); border:1px solid var(--border); position:relative; overflow:hidden; }
     .list-card::before { content:""; position:absolute; inset-inline-start:0; top:0; bottom:0; width:8px; background:var(--block-color); }
+    .list-card.done { border-color:rgba(22,163,74,.45); background:linear-gradient(135deg,rgba(22,163,74,.20),var(--field)); }
+    .list-card.missed { border-color:rgba(239,68,68,.45); background:linear-gradient(135deg,rgba(239,68,68,.18),var(--field)); }
 
-    .week-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 12px;
+    .week-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:12px; }
+    .day-column { min-height:360px; border-radius:24px; background:var(--field); border:1px solid var(--border); padding:14px; }
+    .day-column h4 { margin:0 0 12px; font-size:18px; }
+    .week-mini-block { border-radius:18px; padding:12px; margin-bottom:10px; background:rgba(255,255,255,.12); border:1px solid var(--border); }
+    .week-mini-block strong { display:block; font-size:17px; }
+    .week-mini-block span { color:var(--muted); font-size:14px; font-weight:800; }
+
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.34); display:grid; place-items:center; padding:18px; z-index:100; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+    .modal { width:min(760px,100%); max-height:min(92vh,900px); overflow:auto; border-radius:34px; padding:22px; }
+    .modal.small { width:min(680px,100%); }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    .modal-head h3 { margin:0; font-size:34px; letter-spacing:-.7px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-row { display:grid; gap:8px; }
+    .form-row.full { grid-column:1/-1; }
+    label { font-size:17px; color:var(--muted); font-weight:900; }
+    input, textarea, select { width:100%; min-height:56px; border-radius:18px; border:1px solid var(--border); background:var(--field); color:var(--text); padding:12px 14px; outline:none; font-size:19px; font-weight:700; }
+    textarea { min-height:122px; resize:vertical; line-height:1.6; }
+    input[type="color"] { padding:5px; min-height:58px; }
+    .tasks-editor { display:grid; gap:10px; }
+    .task-editor-row { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; }
+    .task-editor-row .mini-btn { min-height:54px; }
+    .add-task-btn { width:fit-content; }
+    .form-hint { margin:-2px 0 0; color:var(--muted); font-size:15px; line-height:1.6; font-weight:750; }
+    .modal-actions { display:flex; justify-content:flex-start; gap:10px; margin-top:18px; flex-wrap:wrap; }
+    .danger-btn { color:#f87171 !important; }
+
+    .settings-section { border-radius:24px; background:var(--field); border:1px solid var(--border); padding:16px; margin-top:14px; }
+    .settings-section h4 { margin:0 0 10px; font-size:22px; }
+    .settings-section p { margin:0 0 12px; color:var(--muted); line-height:1.7; font-size:16px; }
+    .code-box { direction:ltr; text-align:left; white-space:pre-wrap; background:rgba(0,0,0,.18); border:1px solid var(--border); padding:14px; border-radius:16px; color:var(--text); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; max-height:260px; overflow:auto; }
+
+    .toast { position:fixed; left:18px; bottom:18px; z-index:200; border-radius:18px; padding:14px 16px; background:var(--panel-strong); border:1px solid var(--border); box-shadow:var(--shadow-soft); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); color:var(--text); font-size:17px; font-weight:900; max-width:min(520px,calc(100vw - 36px)); }
+
+    @media (max-width:1080px) {
+      .app-shell { grid-template-columns:1fr; padding:12px; }
+      .sidebar { display:none; }
+      .topbar { position:static; top:auto; min-height:auto; padding:16px; align-items:flex-start; }
+      .date-area h2 { font-size:34px; }
+      .top-actions .desktop-only { display:none; }
+      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .board { min-height:620px; }
+      .mobile-bottom { display:flex; position:static; }
+      .week-grid { grid-template-columns:1fr; }
     }
 
-    .day-column {
-      min-height: 360px;
-      border-radius: 24px;
-      background: var(--field);
-      border: 1px solid var(--border);
-      padding: 14px;
-    }
-
-    .day-column h4 { margin: 0 0 12px; font-size: 18px; }
-    .week-mini-block { border-radius: 18px; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,.12); border: 1px solid var(--border); }
-    .week-mini-block strong { display:block; font-size: 17px; }
-    .week-mini-block span { color: var(--muted); font-size: 14px; font-weight: 800; }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.34);
-      display: grid;
-      place-items: center;
-      padding: 18px;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .modal {
-      width: min(720px, 100%);
-      max-height: min(92vh, 900px);
-      overflow: auto;
-      border-radius: 34px;
-      padding: 22px;
-    }
-
-    .modal.small { width: min(620px, 100%); }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .modal-head h3 { margin: 0; font-size: 34px; letter-spacing: -.7px; }
-
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .form-row { display: grid; gap: 8px; }
-    .form-row.full { grid-column: 1/-1; }
-    label { font-size: 17px; color: var(--muted); font-weight: 900; }
-
-    input, textarea, select {
-      width: 100%;
-      min-height: 56px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: var(--field);
-      color: var(--text);
-      padding: 12px 14px;
-      outline: none;
-      font-size: 19px;
-      font-weight: 750;
-    }
-
-    textarea { min-height: 128px; resize: vertical; line-height: 1.55; }
-    input[type="color"] { padding: 5px; min-height: 58px; }
-
-    .modal-actions { display: flex; justify-content: flex-start; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-
-    .toast {
-      position: fixed;
-      left: 18px;
-      bottom: 18px;
-      z-index: 200;
-      border-radius: 18px;
-      padding: 14px 16px;
-      background: var(--panel-strong);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      color: var(--text);
-      font-size: 17px;
-      font-weight: 900;
-      max-width: min(520px, calc(100vw - 36px));
-    }
-
-    .mobile-bottom {
-      display: none;
-      position: fixed;
-      inset-inline: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom));
-      z-index: 70;
-      border-radius: 26px;
-      padding: 10px;
-      gap: 8px;
-      justify-content: space-between;
-    }
-    .mobile-bottom button { flex: 1; min-height: 54px; border-radius: 18px; font-size: 15px; padding: 7px 5px; white-space: nowrap; }
-
-    .settings-section {
-      border-radius: 24px;
-      background: var(--field);
-      border: 1px solid var(--border);
-      padding: 16px;
-      margin-top: 14px;
-    }
-    .settings-section h4 { margin: 0 0 10px; font-size: 22px; }
-    .settings-section p { margin: 0 0 12px; color: var(--muted); line-height: 1.7; font-size: 16px; }
-    .code-box {
-      direction: ltr;
-      text-align: left;
-      white-space: pre-wrap;
-      background: rgba(0,0,0,.18);
-      border: 1px solid var(--border);
-      padding: 14px;
-      border-radius: 16px;
-      color: var(--text);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-      max-height: 260px;
-      overflow: auto;
-    }
-
-    @media (max-width: 1080px) {
-      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 96px; }
-      .sidebar { display: none; }
-      .topbar { top: 12px; min-height: auto; padding: 16px; align-items: flex-start; }
-      .date-area h2 { font-size: 34px; }
-      .top-actions .desktop-only { display: none; }
-      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .board { min-height: 620px; }
-      .mobile-bottom { display: flex; }
-      .week-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 680px) {
-      body::before { display: none; }
-      .app-shell { padding: 148px 10px 108px; }
-      .topbar {
-        border-radius: 26px;
-        flex-direction: column;
-        gap: 14px;
-        position: fixed;
-        top: calc(10px + env(safe-area-inset-top));
-        left: 10px;
-        right: 10px;
-        z-index: 90;
-      }
-      .mobile-bottom {
-        position: fixed;
-        left: 10px;
-        right: 10px;
-        bottom: calc(10px + env(safe-area-inset-bottom));
-        z-index: 90;
-      }
-      .top-actions { width: 100%; justify-content: stretch; }
-      .top-actions button { flex: 1; }
-      .date-area h2 { font-size: 30px; line-height: 1.12; }
-      .date-area p { font-size: 16px; }
-      .stats-grid { gap: 10px; }
-      .stat-card { border-radius: 22px; padding: 14px; min-height: 96px; }
-      .stat-card strong { font-size: 32px; }
-      .stat-card span { font-size: 14px; }
-      .board-wrap { border-radius: 26px; padding: 12px; }
-      .board-head { flex-direction: column; align-items: flex-start; }
-      .board-head h3 { font-size: 24px; }
-      .board { min-height: 720px; border-radius: 22px; }
-      .block-card { width: calc(100% - 24px); min-height: 168px; padding: 16px; border-radius: 24px; }
-      .block-title { font-size: 23px; }
-      .block-notes { font-size: 18px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .modal { border-radius: 28px; padding: 18px; }
-      .modal-head h3 { font-size: 28px; }
-      input, textarea, select { font-size: 18px; min-height: 56px; }
-      .primary-btn, .soft-btn, .icon-btn { font-size: 17px; }
-      .empty-state h3 { font-size: 26px; }
-      .empty-state p { font-size: 17px; }
+    @media (max-width:680px) {
+      body::before { display:none; }
+      .app-shell { padding:10px; }
+      .main { gap:14px; }
+      .topbar { border-radius:26px; flex-direction:column; gap:14px; position:static; top:auto; }
+      .top-actions { width:100%; justify-content:stretch; }
+      .top-actions button { flex:1; }
+      .date-area h2 { font-size:30px; line-height:1.15; }
+      .date-area p { font-size:16px; }
+      .mobile-bottom { margin:0; padding:8px; }
+      .mobile-bottom button { min-height:54px; font-size:15px; padding:7px 5px; }
+      .stats-grid { gap:10px; }
+      .stat-card { border-radius:22px; padding:14px; min-height:96px; }
+      .stat-card strong { font-size:32px; }
+      .stat-card span { font-size:14px; }
+      .board-wrap { border-radius:26px; padding:12px; }
+      .board-head { flex-direction:column; align-items:flex-start; }
+      .board-head h3 { font-size:24px; }
+      .board-head p { font-size:16px; }
+      .board { min-height:720px; border-radius:22px; }
+      .block-card { width:calc(100% - 24px) !important; max-width:calc(100% - 24px); min-height:188px; padding:16px; border-radius:24px; }
+      .block-title { font-size:23px; }
+      .block-notes { font-size:18px; }
+      .task-item { font-size:17px; }
+      .form-grid { grid-template-columns:1fr; }
+      .task-editor-row { grid-template-columns:1fr; }
+      .add-task-btn { width:100%; }
+      .modal { border-radius:28px; padding:18px; }
+      .modal-head h3 { font-size:28px; }
+      input, textarea, select { font-size:18px; min-height:56px; }
+      .primary-btn, .soft-btn, .icon-btn { font-size:17px; }
+      .empty-state h3 { font-size:26px; }
+      .empty-state p { font-size:17px; }
     }
   </style>
 </head>
@@ -684,6 +341,14 @@
         </div>
       </header>
 
+      <div class="mobile-bottom glass">
+        <button class="soft-btn" data-view-btn="board">Board</button>
+        <button class="soft-btn" data-view-btn="today">List</button>
+        <button class="soft-btn" data-view-btn="week">Week</button>
+        <button class="soft-btn" id="mobileSettingsBtn">إعدادات</button>
+        <button class="primary-btn" id="mobileAddBtn">+</button>
+      </div>
+
       <section class="stats-grid" aria-label="Stats">
         <div class="stat-card glass"><span>إجمالي بلوكات اليوم</span><strong id="statTotal">0</strong></div>
         <div class="stat-card glass"><span>تم التنفيذ</span><strong id="statDone">0</strong></div>
@@ -702,14 +367,6 @@
         <div id="contentArea"></div>
       </section>
     </main>
-  </div>
-
-  <div class="mobile-bottom glass">
-    <button class="soft-btn" data-view-btn="board">Board</button>
-    <button class="soft-btn" data-view-btn="today">List</button>
-    <button class="soft-btn" data-view-btn="week">Week</button>
-    <button class="soft-btn" id="mobileSettingsBtn">إعدادات</button>
-    <button class="primary-btn" id="mobileAddBtn">+</button>
   </div>
 
   <div id="blockModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
@@ -735,6 +392,12 @@
           <label for="blockNotes">ملاحظات</label>
           <textarea id="blockNotes" placeholder="اكتب تفاصيل التاسك أو الهدف من الفترة"></textarea>
         </div>
+        <div class="form-row full">
+          <label>تشيك بوكس داخل البلوك</label>
+          <div id="tasksEditor" class="tasks-editor"></div>
+          <button class="soft-btn add-task-btn" id="addTaskLineBtn" type="button">+ إضافة Checkbox في التفاصيل</button>
+          <p class="form-hint">مفيد لو البلوك فيه أكتر من مهمة. حالة كل checkbox بتتحفظ لليوم الحالي فقط.</p>
+        </div>
         <div class="form-row">
           <label for="blockColor">لون البلوك</label>
           <input id="blockColor" type="color" value="#6366f1" />
@@ -742,14 +405,17 @@
         <div class="form-row">
           <label for="repeatMode">التكرار</label>
           <select id="repeatMode">
-            <option value="everyday">كل يوم</option>
+            <option value="everyday">يتكرر كل يوم</option>
+            <option value="once">اليوم الحالي فقط</option>
           </select>
+          <p class="form-hint">لو البلوك متكرر وعدلت أو حذفت يوم معين، التعديل/الحذف هيبقى لليوم ده فقط.</p>
         </div>
       </div>
       <div class="modal-actions">
         <button class="primary-btn" type="submit">حفظ</button>
         <button class="soft-btn" type="button" data-close-modal>إلغاء</button>
-        <button class="soft-btn hidden" type="button" id="deleteBlockBtn">حذف البلوك</button>
+        <button class="soft-btn danger-btn hidden" type="button" id="deleteTodayBtn">حذف من اليوم فقط</button>
+        <button class="soft-btn danger-btn hidden" type="button" id="deleteSeriesBtn">حذف التكرار بالكامل</button>
       </div>
     </form>
   </div>
@@ -768,40 +434,39 @@
       </div>
 
       <div class="settings-section">
-        <h4>ربط Supabase اختياري</h4>
-        <p>لو عايز تفتح نفس البيانات من الموبايل والكمبيوتر، اعمل مشروع Supabase وشغل SQL الموجود تحت، وبعدها حط URL و anon key هنا وسجل دخول بالإيميل.</p>
+        <h4>ربط Supabase</h4>
+        <p>علشان الداتا تسمع على الكمبيوتر والموبايل: شغل SQL الموجود تحت، وبعدها سجل دخول بالباسورد.</p>
         <div class="form-grid">
           <div class="form-row full">
             <label for="supabaseUrl">Supabase URL</label>
             <input id="supabaseUrl" placeholder="https://xxxx.supabase.co" dir="ltr" />
           </div>
           <div class="form-row full">
-            <label for="supabaseKey">Supabase anon public key</label>
-            <input id="supabaseKey" placeholder="eyJ..." dir="ltr" />
+            <label for="supabaseKey">Supabase anon key</label>
+            <textarea id="supabaseKey" dir="ltr" placeholder="anon public key"></textarea>
           </div>
           <div class="form-row full">
-            <label for="loginEmail">Email Login</label>
-            <input id="loginEmail" type="email" placeholder="you@example.com" dir="ltr" />
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" dir="ltr" placeholder="you@email.com" />
           </div>
           <div class="form-row full">
-            <label for="loginPassword">Password Login</label>
-            <input id="loginPassword" type="password" placeholder="اكتب الباسورد" dir="ltr" autocomplete="current-password" />
-            <p class="form-hint">استخدم نفس الإيميل والباسورد على الكمبيوتر والموبايل عشان البيانات تتزامن.</p>
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" dir="ltr" placeholder="اكتب الباسورد" autocomplete="current-password" />
           </div>
         </div>
         <div class="modal-actions">
-          <button class="primary-btn" id="saveSupabaseBtn" type="button">حفظ الإعدادات</button>
           <button class="primary-btn" id="passwordLoginBtn" type="button">دخول بالباسورد</button>
           <button class="soft-btn" id="passwordSignupBtn" type="button">إنشاء حساب بالباسورد</button>
-          <button class="soft-btn" id="sendMagicBtn" type="button">إرسال Magic Link</button>
-          <button class="soft-btn" id="logoutBtn" type="button">Logout</button>
-          <button class="soft-btn" id="clearCloudConfigBtn" type="button">رجوع Local</button>
+          <button class="soft-btn" id="saveSupabaseBtn" type="button">حفظ إعدادات Supabase</button>
+          <button class="soft-btn" id="sendMagicBtn" type="button">Magic Link احتياطي</button>
+          <button class="soft-btn" id="logoutBtn" type="button">تسجيل خروج</button>
+          <button class="soft-btn" id="clearCloudConfigBtn" type="button">Local Mode</button>
         </div>
       </div>
 
       <div class="settings-section">
-        <h4>SQL الخاص بـ Supabase</h4>
-        <p>انسخه في Supabase SQL Editor مرة واحدة.</p>
+        <h4>Supabase SQL</h4>
+        <p>شغل الكود ده في Supabase SQL Editor. فيه الجداول القديمة والجديدة وبيضيف أعمدة التكرار والـ checkboxes.</p>
         <pre class="code-box" id="sqlBox"></pre>
       </div>
     </div>
@@ -810,7 +475,10 @@
   <div id="toast" class="toast hidden"></div>
 
   <script>
-    const SQL_SCHEMA = `create type block_status as enum ('pending', 'done', 'missed');
+    const SQL_SCHEMA = `do $$ begin
+  create type block_status as enum ('pending', 'done', 'missed');
+exception when duplicate_object then null;
+end $$;
 
 create table if not exists public.recurring_blocks (
   id uuid primary key default gen_random_uuid(),
@@ -819,14 +487,46 @@ create table if not exists public.recurring_blocks (
   notes text default '',
   start_time time not null,
   end_time time not null,
-  color text not null,
+  days_of_week smallint[] not null default array[0,1,2,3,4,5,6],
+  color text not null default '#6366f1',
   position_x integer not null default 20,
   position_y integer not null default 20,
-  width integer not null default 330,
-  height integer not null default 172,
+  width integer not null default 340,
+  height integer not null default 188,
+  sort_order integer default 0,
   is_active boolean not null default true,
+  repeat_mode text not null default 'everyday' check (repeat_mode in ('everyday','once')),
+  block_date date,
+  tasks jsonb not null default '[]'::jsonb,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
+);
+
+alter table public.recurring_blocks add column if not exists repeat_mode text not null default 'everyday';
+alter table public.recurring_blocks add column if not exists block_date date;
+alter table public.recurring_blocks add column if not exists tasks jsonb not null default '[]'::jsonb;
+alter table public.recurring_blocks add column if not exists days_of_week smallint[] not null default array[0,1,2,3,4,5,6];
+alter table public.recurring_blocks add column if not exists sort_order integer default 0;
+
+create table if not exists public.block_overrides (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
+  override_date date not null,
+  title text,
+  notes text,
+  start_time time,
+  end_time time,
+  color text,
+  position_x integer,
+  position_y integer,
+  width integer,
+  height integer,
+  tasks jsonb,
+  is_deleted boolean not null default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(recurring_block_id, override_date)
 );
 
 create table if not exists public.block_completions (
@@ -841,40 +541,57 @@ create table if not exists public.block_completions (
   unique(recurring_block_id, completion_date)
 );
 
+create table if not exists public.task_checks (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
+  task_id text not null,
+  check_date date not null,
+  is_checked boolean not null default false,
+  updated_at timestamptz default now(),
+  unique(recurring_block_id, task_id, check_date)
+);
+
 alter table public.recurring_blocks enable row level security;
+alter table public.block_overrides enable row level security;
 alter table public.block_completions enable row level security;
+alter table public.task_checks enable row level security;
 
-create policy "Users can view own recurring blocks"
-on public.recurring_blocks for select
-using (auth.uid() = user_id);
+drop policy if exists "Users can view own recurring blocks" on public.recurring_blocks;
+drop policy if exists "Users can insert own recurring blocks" on public.recurring_blocks;
+drop policy if exists "Users can update own recurring blocks" on public.recurring_blocks;
+drop policy if exists "Users can delete own recurring blocks" on public.recurring_blocks;
+create policy "Users can view own recurring blocks" on public.recurring_blocks for select using (auth.uid() = user_id);
+create policy "Users can insert own recurring blocks" on public.recurring_blocks for insert with check (auth.uid() = user_id);
+create policy "Users can update own recurring blocks" on public.recurring_blocks for update using (auth.uid() = user_id);
+create policy "Users can delete own recurring blocks" on public.recurring_blocks for delete using (auth.uid() = user_id);
 
-create policy "Users can insert own recurring blocks"
-on public.recurring_blocks for insert
-with check (auth.uid() = user_id);
+drop policy if exists "Users can view own overrides" on public.block_overrides;
+drop policy if exists "Users can insert own overrides" on public.block_overrides;
+drop policy if exists "Users can update own overrides" on public.block_overrides;
+drop policy if exists "Users can delete own overrides" on public.block_overrides;
+create policy "Users can view own overrides" on public.block_overrides for select using (auth.uid() = user_id);
+create policy "Users can insert own overrides" on public.block_overrides for insert with check (auth.uid() = user_id);
+create policy "Users can update own overrides" on public.block_overrides for update using (auth.uid() = user_id);
+create policy "Users can delete own overrides" on public.block_overrides for delete using (auth.uid() = user_id);
 
-create policy "Users can update own recurring blocks"
-on public.recurring_blocks for update
-using (auth.uid() = user_id);
+drop policy if exists "Users can view own completions" on public.block_completions;
+drop policy if exists "Users can insert own completions" on public.block_completions;
+drop policy if exists "Users can update own completions" on public.block_completions;
+drop policy if exists "Users can delete own completions" on public.block_completions;
+create policy "Users can view own completions" on public.block_completions for select using (auth.uid() = user_id);
+create policy "Users can insert own completions" on public.block_completions for insert with check (auth.uid() = user_id);
+create policy "Users can update own completions" on public.block_completions for update using (auth.uid() = user_id);
+create policy "Users can delete own completions" on public.block_completions for delete using (auth.uid() = user_id);
 
-create policy "Users can delete own recurring blocks"
-on public.recurring_blocks for delete
-using (auth.uid() = user_id);
-
-create policy "Users can view own completions"
-on public.block_completions for select
-using (auth.uid() = user_id);
-
-create policy "Users can insert own completions"
-on public.block_completions for insert
-with check (auth.uid() = user_id);
-
-create policy "Users can update own completions"
-on public.block_completions for update
-using (auth.uid() = user_id);
-
-create policy "Users can delete own completions"
-on public.block_completions for delete
-using (auth.uid() = user_id);`;
+drop policy if exists "Users can view own task checks" on public.task_checks;
+drop policy if exists "Users can insert own task checks" on public.task_checks;
+drop policy if exists "Users can update own task checks" on public.task_checks;
+drop policy if exists "Users can delete own task checks" on public.task_checks;
+create policy "Users can view own task checks" on public.task_checks for select using (auth.uid() = user_id);
+create policy "Users can insert own task checks" on public.task_checks for insert with check (auth.uid() = user_id);
+create policy "Users can update own task checks" on public.task_checks for update using (auth.uid() = user_id);
+create policy "Users can delete own task checks" on public.task_checks for delete using (auth.uid() = user_id);`;
 
     const COLORS = ['#6366f1', '#0ea5e9', '#ec4899', '#22c55e', '#f97316', '#a855f7', '#14b8a6', '#f43f5e', '#84cc16', '#eab308', '#06b6d4', '#8b5cf6'];
     const SNAP = 16;
@@ -902,7 +619,10 @@ using (auth.uid() = user_id);`;
       blockNotes: document.getElementById('blockNotes'),
       blockColor: document.getElementById('blockColor'),
       repeatMode: document.getElementById('repeatMode'),
-      deleteBlockBtn: document.getElementById('deleteBlockBtn'),
+      tasksEditor: document.getElementById('tasksEditor'),
+      addTaskLineBtn: document.getElementById('addTaskLineBtn'),
+      deleteTodayBtn: document.getElementById('deleteTodayBtn'),
+      deleteSeriesBtn: document.getElementById('deleteSeriesBtn'),
       settingsModal: document.getElementById('settingsModal'),
       toast: document.getElementById('toast'),
       syncDot: document.getElementById('syncDot'),
@@ -919,9 +639,12 @@ using (auth.uid() = user_id);`;
       view: localStorage.getItem('tb_view') || 'board',
       theme: localStorage.getItem('tb_theme') || 'dark',
       currentDate: new Date(),
-      blocks: [],
+      templates: [],
+      overrides: {},
       completions: {},
+      taskChecks: {},
       editingId: null,
+      modalTasks: [],
       client: null,
       user: null,
       cloudReady: false
@@ -930,16 +653,43 @@ using (auth.uid() = user_id);`;
     function pad(n) { return String(n).padStart(2, '0'); }
     function dateKey(d = state.currentDate) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
     function toTime(t) { return (t || '').slice(0,5); }
-    function formatDateTitle(d) {
-      return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
-    }
-    function formatDateSubtitle(d) {
-      return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
-    }
+    function formatDateTitle(d) { return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); }
+    function formatDateSubtitle(d) { return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
     function uid() { return (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2)); }
+    function taskId() { return 'task-' + Math.random().toString(16).slice(2) + '-' + Date.now(); }
     function snap(n) { return Math.round(n / SNAP) * SNAP; }
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-    function getStatus(blockId, day = dateKey()) { return state.completions[`${blockId}_${day}`] || 'pending'; }
+    function overrideKey(id, day = dateKey()) { return `${id}_${day}`; }
+    function completionKey(id, day = dateKey()) { return `${id}_${day}`; }
+    function taskKey(id, tId, day = dateKey()) { return `${id}_${day}_${tId}`; }
+    function getStatus(blockId, day = dateKey()) { return state.completions[completionKey(blockId, day)] || 'pending'; }
+    function isTaskChecked(blockId, tId, day = dateKey()) { return !!state.taskChecks[taskKey(blockId, tId, day)]; }
+
+    function normalizeTask(t) {
+      if (typeof t === 'string') return { id: taskId(), text: t };
+      return { id: t?.id || taskId(), text: t?.text || '' };
+    }
+
+    function normalizeTemplate(b) {
+      return {
+        id: b.id || uid(),
+        title: b.title || 'بلوك جديد',
+        notes: b.notes || '',
+        tasks: Array.isArray(b.tasks) ? b.tasks.map(normalizeTask).filter(t => t.text.trim()) : [],
+        start_time: toTime(b.start_time) || '09:00',
+        end_time: toTime(b.end_time) || '10:00',
+        color: b.color || COLORS[0],
+        position_x: Number.isFinite(+b.position_x) ? +b.position_x : 20,
+        position_y: Number.isFinite(+b.position_y) ? +b.position_y : 20,
+        width: Number.isFinite(+b.width) ? +b.width : 340,
+        height: Number.isFinite(+b.height) ? +b.height : 188,
+        repeat_mode: b.repeat_mode || b.repeat || 'everyday',
+        block_date: b.block_date || null,
+        is_active: b.is_active !== false,
+        created_at: b.created_at || new Date().toISOString(),
+        updated_at: b.updated_at || new Date().toISOString()
+      };
+    }
 
     function showToast(msg) {
       els.toast.textContent = msg;
@@ -955,25 +705,53 @@ using (auth.uid() = user_id);`;
       document.getElementById('themeBtn').textContent = theme === 'dark' ? '☾' : '☀';
     }
 
+    function sampleTemplates() {
+      return [
+        normalizeTemplate({ id: uid(), title: 'شغل عميق', notes: 'أهم تاسكات اليوم بدون مشتتات', tasks:[{id:taskId(), text:'افتح التاسكات المطلوبة'}, {id:taskId(), text:'سلّم أول نسخة'}], start_time:'09:00', end_time:'13:00', color:'#6366f1', position_x:32, position_y:32, repeat_mode:'everyday' }),
+        normalizeTemplate({ id: uid(), title: 'راحة وغدا', notes: 'فصل بسيط وإعادة شحن', tasks:[], start_time:'13:00', end_time:'14:00', color:'#0ea5e9', position_x:400, position_y:64, repeat_mode:'everyday' }),
+        normalizeTemplate({ id: uid(), title: 'مراجعة وتسليمات', notes: 'مراجعة التاسكات والفايلات المطلوبة', tasks:[{id:taskId(), text:'مراجعة الفايلات'}, {id:taskId(), text:'إرسال التسليم'}], start_time:'17:00', end_time:'20:00', color:'#ec4899', position_x:160, position_y:270, repeat_mode:'everyday' })
+      ];
+    }
+
     function localLoad() {
-      const blocks = JSON.parse(localStorage.getItem('tb_blocks') || 'null');
+      const legacyBlocks = JSON.parse(localStorage.getItem('tb_blocks') || 'null');
+      const templates = JSON.parse(localStorage.getItem('tb_templates') || 'null');
+      const overrides = JSON.parse(localStorage.getItem('tb_overrides') || '{}');
       const completions = JSON.parse(localStorage.getItem('tb_completions') || '{}');
-      state.blocks = Array.isArray(blocks) ? blocks : sampleBlocks();
+      const taskChecks = JSON.parse(localStorage.getItem('tb_task_checks') || '{}');
+      const source = Array.isArray(templates) ? templates : Array.isArray(legacyBlocks) ? legacyBlocks : null;
+      state.templates = source ? source.map(normalizeTemplate) : sampleTemplates();
+      state.overrides = overrides || {};
       state.completions = completions || {};
-      if (!blocks) localSave();
+      state.taskChecks = taskChecks || {};
+      if (!source) localSave();
     }
 
     function localSave() {
-      localStorage.setItem('tb_blocks', JSON.stringify(state.blocks));
+      localStorage.setItem('tb_templates', JSON.stringify(state.templates));
+      localStorage.setItem('tb_overrides', JSON.stringify(state.overrides));
       localStorage.setItem('tb_completions', JSON.stringify(state.completions));
+      localStorage.setItem('tb_task_checks', JSON.stringify(state.taskChecks));
+      localStorage.setItem('tb_blocks', JSON.stringify(state.templates));
     }
 
-    function sampleBlocks() {
-      return [
-        { id: uid(), title: 'شغل عميق', notes: 'أهم تاسكات اليوم بدون مشتتات', start_time: '09:00', end_time: '13:00', color: '#6366f1', position_x: 32, position_y: 32, width: 330, height: 172, is_active: true },
-        { id: uid(), title: 'راحة وغدا', notes: 'فصل بسيط وإعادة شحن', start_time: '13:00', end_time: '14:00', color: '#0ea5e9', position_x: 400, position_y: 64, width: 330, height: 172, is_active: true },
-        { id: uid(), title: 'مراجعة وتسليمات', notes: 'مراجعة التاسكات والفايلات المطلوبة', start_time: '17:00', end_time: '20:00', color: '#ec4899', position_x: 160, position_y: 270, width: 330, height: 172, is_active: true }
-      ];
+    function visibleBlocksFor(day = dateKey()) {
+      return state.templates
+        .filter(t => t.is_active !== false)
+        .map(t => {
+          const template = normalizeTemplate(t);
+          if (template.repeat_mode === 'once' && template.block_date !== day) return null;
+          const over = state.overrides[overrideKey(template.id, day)] || {};
+          if (template.repeat_mode === 'everyday' && over.is_deleted) return null;
+          const merged = { ...template, ...Object.fromEntries(Object.entries(over).filter(([_, v]) => v !== null && v !== undefined)) };
+          merged.id = template.id;
+          merged.repeat_mode = template.repeat_mode;
+          merged.block_date = template.block_date;
+          merged.tasks = Array.isArray(over.tasks) ? over.tasks.map(normalizeTask).filter(t => t.text.trim()) : template.tasks;
+          return merged;
+        })
+        .filter(Boolean)
+        .sort((a,b) => (a.start_time || '').localeCompare(b.start_time || ''));
     }
 
     function setSyncStatus(mode, text) {
@@ -986,8 +764,8 @@ using (auth.uid() = user_id);`;
       }
     }
 
-    function dbToBlock(row) {
-      return {
+    function dbToTemplate(row) {
+      return normalizeTemplate({
         id: row.id,
         title: row.title,
         notes: row.notes || '',
@@ -996,13 +774,18 @@ using (auth.uid() = user_id);`;
         color: row.color || COLORS[0],
         position_x: row.position_x ?? 20,
         position_y: row.position_y ?? 20,
-        width: row.width || 330,
-        height: row.height || 172,
-        is_active: row.is_active !== false
-      };
+        width: row.width || 340,
+        height: row.height || 188,
+        repeat_mode: row.repeat_mode || 'everyday',
+        block_date: row.block_date || null,
+        tasks: Array.isArray(row.tasks) ? row.tasks : [],
+        is_active: row.is_active !== false,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      });
     }
 
-    function blockToDb(block) {
+    function templateToDb(block) {
       return {
         id: block.id,
         user_id: state.user.id,
@@ -1013,9 +796,32 @@ using (auth.uid() = user_id);`;
         color: block.color,
         position_x: block.position_x || 20,
         position_y: block.position_y || 20,
-        width: block.width || 330,
-        height: block.height || 172,
+        width: block.width || 340,
+        height: block.height || 188,
+        repeat_mode: block.repeat_mode || 'everyday',
+        block_date: block.block_date || null,
+        tasks: block.tasks || [],
         is_active: block.is_active !== false,
+        updated_at: new Date().toISOString()
+      };
+    }
+
+    function overrideToDb(blockId, day, over) {
+      return {
+        user_id: state.user.id,
+        recurring_block_id: blockId,
+        override_date: day,
+        title: over.title ?? null,
+        notes: over.notes ?? null,
+        start_time: over.start_time ?? null,
+        end_time: over.end_time ?? null,
+        color: over.color ?? null,
+        position_x: over.position_x ?? null,
+        position_y: over.position_y ?? null,
+        width: over.width ?? null,
+        height: over.height ?? null,
+        tasks: Array.isArray(over.tasks) ? over.tasks : null,
+        is_deleted: !!over.is_deleted,
         updated_at: new Date().toISOString()
       };
     }
@@ -1025,6 +831,7 @@ using (auth.uid() = user_id);`;
       const key = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
       els.supabaseUrl.value = url;
       els.supabaseKey.value = key;
+      els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL || '';
 
       if (!url || !key || !window.supabase) {
         state.client = null;
@@ -1067,7 +874,6 @@ using (auth.uid() = user_id);`;
 
     async function loadCloudData() {
       if (!state.client || !state.user) return;
-      const day = dateKey();
       const { data: blocks, error: blocksError } = await state.client
         .from('recurring_blocks')
         .select('*')
@@ -1076,45 +882,120 @@ using (auth.uid() = user_id);`;
         .order('created_at', { ascending: true });
       if (blocksError) {
         console.error(blocksError);
-        showToast('Supabase: تأكد إنك شغلت SQL schema.');
+        showToast('Supabase: شغل SQL الجديد من الإعدادات.');
         return;
       }
-      state.blocks = (blocks || []).map(dbToBlock);
+      state.templates = (blocks || []).map(dbToTemplate);
 
-      const { data: completions } = await state.client
-        .from('block_completions')
-        .select('*')
-        .eq('user_id', state.user.id)
-        .eq('completion_date', day);
-      state.completions = { ...state.completions };
-      (completions || []).forEach(c => { state.completions[`${c.recurring_block_id}_${c.completion_date}`] = c.status; });
+      const { data: overrides } = await state.client.from('block_overrides').select('*').eq('user_id', state.user.id);
+      state.overrides = {};
+      (overrides || []).forEach(o => {
+        state.overrides[overrideKey(o.recurring_block_id, o.override_date)] = {
+          title: o.title,
+          notes: o.notes,
+          start_time: o.start_time ? toTime(o.start_time) : null,
+          end_time: o.end_time ? toTime(o.end_time) : null,
+          color: o.color,
+          position_x: o.position_x,
+          position_y: o.position_y,
+          width: o.width,
+          height: o.height,
+          tasks: Array.isArray(o.tasks) ? o.tasks : null,
+          is_deleted: o.is_deleted
+        };
+      });
+
+      const { data: completions } = await state.client.from('block_completions').select('*').eq('user_id', state.user.id);
+      state.completions = {};
+      (completions || []).forEach(c => { state.completions[completionKey(c.recurring_block_id, c.completion_date)] = c.status; });
+
+      const { data: taskChecks } = await state.client.from('task_checks').select('*').eq('user_id', state.user.id);
+      state.taskChecks = {};
+      (taskChecks || []).forEach(t => { state.taskChecks[taskKey(t.recurring_block_id, t.task_id, t.check_date)] = !!t.is_checked; });
+
       localSave();
     }
 
-    async function saveBlock(block) {
+    async function saveTemplate(block) {
       localSave();
       if (!state.cloudReady) return;
-      const { error } = await state.client.from('recurring_blocks').upsert(blockToDb(block));
-      if (error) { console.error(error); showToast('لم يتم حفظ البلوك على Supabase.'); }
+      const { error } = await state.client.from('recurring_blocks').upsert(templateToDb(block));
+      if (error) { console.error(error); showToast('لم يتم حفظ البلوك على Supabase. شغل SQL الجديد.'); }
     }
 
-    async function deleteBlock(id) {
-      state.blocks = state.blocks.filter(b => b.id !== id);
-      Object.keys(state.completions).forEach(key => { if (key.startsWith(id + '_')) delete state.completions[key]; });
+    async function saveOverride(blockId, day, over) {
+      state.overrides[overrideKey(blockId, day)] = { ...(state.overrides[overrideKey(blockId, day)] || {}), ...over };
+      localSave();
+      if (!state.cloudReady) return;
+      const { error } = await state.client.from('block_overrides').upsert(overrideToDb(blockId, day, state.overrides[overrideKey(blockId, day)]), { onConflict: 'recurring_block_id,override_date' });
+      if (error) { console.error(error); showToast('لم يتم حفظ تعديل اليوم على Supabase. شغل SQL الجديد.'); }
+    }
+
+    function getTemplate(id) { return state.templates.find(b => b.id === id); }
+
+    async function saveVisibleBlock(block) {
+      const template = getTemplate(block.id);
+      if (!template) return;
+      const day = dateKey();
+      const data = {
+        title: block.title,
+        notes: block.notes || '',
+        start_time: block.start_time,
+        end_time: block.end_time,
+        color: block.color,
+        position_x: block.position_x,
+        position_y: block.position_y,
+        width: block.width || 340,
+        height: block.height || 188,
+        tasks: block.tasks || []
+      };
+      if (template.repeat_mode === 'everyday') {
+        await saveOverride(template.id, day, data);
+      } else {
+        Object.assign(template, data, { updated_at: new Date().toISOString() });
+        await saveTemplate(template);
+      }
+    }
+
+    async function deleteBlockToday(id) {
+      const template = getTemplate(id);
+      const day = dateKey();
+      if (!template) return;
+      if (template.repeat_mode === 'everyday') {
+        await saveOverride(id, day, { is_deleted: true });
+      } else {
+        state.templates = state.templates.filter(b => b.id !== id);
+        if (state.cloudReady) await state.client.from('recurring_blocks').delete().eq('id', id).eq('user_id', state.user.id);
+      }
+      clearDayState(id, day);
+      closeBlockModal();
+      render();
+      showToast(template.repeat_mode === 'everyday' ? 'تم حذف البلوك من اليوم ده فقط.' : 'تم حذف البلوك.');
+    }
+
+    async function deleteFullSeries(id) {
+      state.templates = state.templates.filter(b => b.id !== id);
+      Object.keys(state.overrides).forEach(k => { if (k.startsWith(id + '_')) delete state.overrides[k]; });
+      Object.keys(state.completions).forEach(k => { if (k.startsWith(id + '_')) delete state.completions[k]; });
+      Object.keys(state.taskChecks).forEach(k => { if (k.startsWith(id + '_')) delete state.taskChecks[k]; });
       localSave();
       if (state.cloudReady) {
-        const { error } = await state.client.from('recurring_blocks').delete().eq('id', id).eq('user_id', state.user.id);
-        if (error) console.error(error);
+        await state.client.from('recurring_blocks').delete().eq('id', id).eq('user_id', state.user.id);
       }
       closeBlockModal();
       render();
-      showToast('تم حذف البلوك.');
+      showToast('تم حذف التكرار بالكامل من كل الأيام.');
+    }
+
+    function clearDayState(id, day) {
+      delete state.completions[completionKey(id, day)];
+      Object.keys(state.taskChecks).forEach(k => { if (k.startsWith(`${id}_${day}_`)) delete state.taskChecks[k]; });
+      localSave();
     }
 
     async function saveCompletion(blockId, status) {
       const day = dateKey();
-      const key = `${blockId}_${day}`;
-      state.completions[key] = status;
+      state.completions[completionKey(blockId, day)] = status;
       localSave();
       if (state.cloudReady) {
         const { error } = await state.client.from('block_completions').upsert({
@@ -1130,19 +1011,35 @@ using (auth.uid() = user_id);`;
       render();
     }
 
+    async function saveTaskCheck(blockId, tId, checked) {
+      const day = dateKey();
+      state.taskChecks[taskKey(blockId, tId, day)] = checked;
+      localSave();
+      if (state.cloudReady) {
+        const { error } = await state.client.from('task_checks').upsert({
+          user_id: state.user.id,
+          recurring_block_id: blockId,
+          task_id: tId,
+          check_date: day,
+          is_checked: checked,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'recurring_block_id,task_id,check_date' });
+        if (error) { console.error(error); showToast('لم يتم حفظ checkbox على Supabase. شغل SQL الجديد.'); }
+      }
+      render();
+    }
+
     async function resetTodayStatuses() {
       const day = dateKey();
       Object.keys(state.completions).forEach(key => { if (key.endsWith('_' + day)) delete state.completions[key]; });
+      Object.keys(state.taskChecks).forEach(key => { if (key.includes('_' + day + '_')) delete state.taskChecks[key]; });
       localSave();
       if (state.cloudReady) {
         await state.client.from('block_completions').delete().eq('user_id', state.user.id).eq('completion_date', day);
+        await state.client.from('task_checks').delete().eq('user_id', state.user.id).eq('check_date', day);
       }
       render();
-      showToast('تم تصفير حالة اليوم.');
-    }
-
-    function sortedBlocks() {
-      return state.blocks.filter(b => b.is_active !== false).sort((a,b) => (a.start_time || '').localeCompare(b.start_time || ''));
+      showToast('تم تصفير حالة اليوم والـ checkboxes.');
     }
 
     function updateHeader() {
@@ -1164,11 +1061,31 @@ using (auth.uid() = user_id);`;
 
     function render() {
       updateHeader();
-      const blocks = sortedBlocks();
+      const blocks = visibleBlocksFor(dateKey());
       updateStats(blocks);
       if (state.view === 'board') renderBoard(blocks);
       if (state.view === 'today') renderList(blocks);
-      if (state.view === 'week') renderWeek(blocks);
+      if (state.view === 'week') renderWeek();
+    }
+
+    function emptyHTML() {
+      return `<div class="empty-state"><div class="box"><h3>ابدأ أول بلوك</h3><p>اضغط إضافة بلوك، واختار هل يتكرر كل يوم أو يبقى لليوم الحالي فقط.</p></div></div>`;
+    }
+
+    function renderTaskList(block) {
+      if (!Array.isArray(block.tasks) || !block.tasks.length) return '';
+      return `<div class="task-list">${block.tasks.map(t => {
+        const done = isTaskChecked(block.id, t.id);
+        return `<label class="task-item ${done ? 'done' : ''}"><input type="checkbox" data-task-id="${t.id}" ${done ? 'checked' : ''}><span></span></label>`;
+      }).join('')}</div>`;
+    }
+
+    function hydrateTaskText(container, block) {
+      container.querySelectorAll('[data-task-id]').forEach(input => {
+        const task = block.tasks.find(t => t.id === input.dataset.taskId);
+        input.closest('.task-item').querySelector('span').textContent = task?.text || '';
+        input.onchange = () => saveTaskCheck(block.id, input.dataset.taskId, input.checked);
+      });
     }
 
     function renderBoard(blocks) {
@@ -1180,17 +1097,16 @@ using (auth.uid() = user_id);`;
       blocks.forEach(block => board.appendChild(createBlockCard(block, board)));
     }
 
-    function emptyHTML() {
-      return `<div class="empty-state"><div class="box"><h3>ابدأ أول بلوك</h3><p>اضغط إضافة بلوك وحدد الوقت والملاحظات. البلوك هيتكرر تلقائيًا كل يوم.</p></div></div>`;
-    }
+    function statusText(status) { return status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'; }
+    function repeatText(block) { return block.repeat_mode === 'everyday' ? 'يتكرر يوميًا' : 'اليوم فقط'; }
 
     function createBlockCard(block, board) {
       const status = getStatus(block.id);
       const card = document.createElement('article');
       card.className = `block-card ${status === 'done' ? 'done' : ''} ${status === 'missed' ? 'missed' : ''}`;
       card.style.setProperty('--block-color', block.color);
-      card.style.width = `${block.width || 330}px`;
-      card.style.minHeight = `${block.height || 172}px`;
+      card.style.width = `${block.width || 340}px`;
+      card.style.minHeight = `${block.height || 188}px`;
       card.style.transform = `translate(${block.position_x || 20}px, ${block.position_y || 20}px)`;
       card.dataset.id = block.id;
       card.innerHTML = `
@@ -1199,9 +1115,10 @@ using (auth.uid() = user_id);`;
             <h4 class="block-title"></h4>
             <button class="drag-handle" type="button" title="Drag">⌘</button>
           </div>
-          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span></div>
+          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="repeat-pill">${repeatText(block)}</span></div>
           <p class="block-notes"></p>
-          <div><span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span></div>
+          ${renderTaskList(block)}
+          <div><span class="status-pill">${statusText(status)}</span></div>
           <div class="block-actions">
             <button class="mini-btn done-btn" type="button" data-action="done">✓ عملت</button>
             <button class="mini-btn miss-btn" type="button" data-action="missed">✕ ماتعملش</button>
@@ -1211,6 +1128,7 @@ using (auth.uid() = user_id);`;
         </div>`;
       card.querySelector('.block-title').textContent = block.title;
       card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
+      hydrateTaskText(card, block);
       card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
       card.querySelector('[data-action="missed"]').onclick = () => saveCompletion(block.id, 'missed');
       card.querySelector('[data-action="pending"]').onclick = () => saveCompletion(block.id, 'pending');
@@ -1223,7 +1141,7 @@ using (auth.uid() = user_id);`;
       let startX = 0, startY = 0, originX = 0, originY = 0, dragging = false;
       const handle = card.querySelector('.drag-handle');
       const onPointerDown = (e) => {
-        if (e.target.closest('[data-action]')) return;
+        if (e.target.closest('[data-action]') || e.target.closest('.task-item')) return;
         dragging = true;
         card.classList.add('dragging');
         startX = e.clientX;
@@ -1250,7 +1168,7 @@ using (auth.uid() = user_id);`;
         dragging = false;
         card.classList.remove('dragging');
         card.releasePointerCapture?.(e.pointerId);
-        await saveBlock(block);
+        await saveVisibleBlock(block);
       };
       handle.addEventListener('pointerdown', onPointerDown);
       card.addEventListener('pointermove', onPointerMove);
@@ -1260,7 +1178,7 @@ using (auth.uid() = user_id);`;
 
     function renderList(blocks) {
       els.viewTitle.textContent = 'قائمة اليوم';
-      els.viewHint.textContent = 'أفضل وضع للموبايل: كروت كبيرة وواضحة مع Done / Missed.';
+      els.viewHint.textContent = 'أفضل وضع للموبايل: كروت كبيرة وواضحة مع Done / Missed و checkboxes.';
       const list = document.createElement('div');
       list.className = 'list-view';
       if (!blocks.length) {
@@ -1274,8 +1192,9 @@ using (auth.uid() = user_id);`;
         card.style.setProperty('--block-color', block.color);
         card.innerHTML = `
           <h4 class="block-title"></h4>
-          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span></div>
+          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="repeat-pill">${repeatText(block)}</span> <span class="status-pill">${statusText(status)}</span></div>
           <p class="block-notes"></p>
+          ${renderTaskList(block)}
           <div class="block-actions">
             <button class="mini-btn done-btn" data-action="done">✓ عملت</button>
             <button class="mini-btn miss-btn" data-action="missed">✕ ماتعملش</button>
@@ -1284,6 +1203,7 @@ using (auth.uid() = user_id);`;
           </div>`;
         card.querySelector('.block-title').textContent = block.title;
         card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
+        hydrateTaskText(card, block);
         card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
         card.querySelector('[data-action="missed"]').onclick = () => saveCompletion(block.id, 'missed');
         card.querySelector('[data-action="pending"]').onclick = () => saveCompletion(block.id, 'pending');
@@ -1294,9 +1214,9 @@ using (auth.uid() = user_id);`;
       els.contentArea.appendChild(list);
     }
 
-    function renderWeek(blocks) {
+    function renderWeek() {
       els.viewTitle.textContent = 'Week View';
-      els.viewHint.textContent = 'نظرة سريعة على البلوكات المتكررة خلال الأسبوع.';
+      els.viewHint.textContent = 'نظرة سريعة على البلوكات حسب كل يوم مع احترام التعديلات والحذف الخاص بكل يوم.';
       const start = new Date(state.currentDate);
       start.setDate(start.getDate() - start.getDay());
       const grid = document.createElement('div');
@@ -1304,10 +1224,11 @@ using (auth.uid() = user_id);`;
       for (let i = 0; i < 7; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
+        const day = dateKey(d);
         const col = document.createElement('div');
         col.className = 'day-column';
         col.innerHTML = `<h4>${d.toLocaleDateString('ar-EG', { weekday:'short', day:'numeric', month:'short' })}</h4>`;
-        blocks.forEach(block => {
+        visibleBlocksFor(day).forEach(block => {
           const mini = document.createElement('div');
           mini.className = 'week-mini-block';
           mini.style.borderInlineStart = `6px solid ${block.color}`;
@@ -1321,16 +1242,35 @@ using (auth.uid() = user_id);`;
       els.contentArea.appendChild(grid);
     }
 
+    function renderTasksEditor() {
+      els.tasksEditor.innerHTML = '';
+      state.modalTasks.forEach((task, index) => {
+        const row = document.createElement('div');
+        row.className = 'task-editor-row';
+        row.innerHTML = `<input placeholder="مهمة داخل البلوك" value=""><button class="mini-btn danger-btn" type="button">حذف</button>`;
+        row.querySelector('input').value = task.text || '';
+        row.querySelector('input').oninput = (e) => { state.modalTasks[index].text = e.target.value; };
+        row.querySelector('button').onclick = () => { state.modalTasks.splice(index, 1); renderTasksEditor(); };
+        els.tasksEditor.appendChild(row);
+      });
+    }
+
     function openBlockModal(id = null) {
       state.editingId = id;
-      const block = id ? state.blocks.find(b => b.id === id) : null;
+      const block = id ? visibleBlocksFor(dateKey()).find(b => b.id === id) : null;
+      const template = id ? getTemplate(id) : null;
       els.modalTitle.textContent = block ? 'تعديل البلوك' : 'إضافة بلوك';
       els.blockTitle.value = block?.title || '';
       els.startTime.value = toTime(block?.start_time) || '09:00';
       els.endTime.value = toTime(block?.end_time) || '10:00';
       els.blockNotes.value = block?.notes || '';
-      els.blockColor.value = block?.color || COLORS[state.blocks.length % COLORS.length];
-      els.deleteBlockBtn.classList.toggle('hidden', !block);
+      els.blockColor.value = block?.color || COLORS[state.templates.length % COLORS.length];
+      els.repeatMode.value = template?.repeat_mode || 'everyday';
+      els.repeatMode.disabled = !!block;
+      state.modalTasks = Array.isArray(block?.tasks) ? block.tasks.map(normalizeTask) : [];
+      renderTasksEditor();
+      els.deleteTodayBtn.classList.toggle('hidden', !block);
+      els.deleteSeriesBtn.classList.toggle('hidden', !block || template?.repeat_mode !== 'everyday');
       els.blockModal.classList.remove('hidden');
       setTimeout(() => els.blockTitle.focus(), 50);
     }
@@ -1338,37 +1278,62 @@ using (auth.uid() = user_id);`;
     function closeBlockModal() {
       els.blockModal.classList.add('hidden');
       state.editingId = null;
+      state.modalTasks = [];
+      els.repeatMode.disabled = false;
       els.blockForm.reset();
     }
 
     async function handleBlockSubmit(e) {
       e.preventDefault();
-      const existing = state.editingId ? state.blocks.find(b => b.id === state.editingId) : null;
-      const block = existing || {
+      const cleanTasks = state.modalTasks.map(normalizeTask).filter(t => t.text.trim());
+      const existingTemplate = state.editingId ? getTemplate(state.editingId) : null;
+      if (existingTemplate) {
+        const visible = visibleBlocksFor(dateKey()).find(b => b.id === state.editingId) || existingTemplate;
+        const block = {
+          ...visible,
+          title: els.blockTitle.value.trim(),
+          start_time: els.startTime.value,
+          end_time: els.endTime.value,
+          notes: els.blockNotes.value.trim(),
+          color: els.blockColor.value,
+          tasks: cleanTasks
+        };
+        await saveVisibleBlock(block);
+        closeBlockModal();
+        render();
+        showToast(existingTemplate.repeat_mode === 'everyday' ? 'تم تعديل اليوم ده فقط.' : 'تم تعديل البلوك.');
+        return;
+      }
+
+      const repeatMode = els.repeatMode.value;
+      const block = normalizeTemplate({
         id: uid(),
-        position_x: 20 + (state.blocks.length % 3) * 360,
-        position_y: 20 + Math.floor(state.blocks.length / 3) * 215,
-        width: 330,
-        height: 172,
+        title: els.blockTitle.value.trim(),
+        start_time: els.startTime.value,
+        end_time: els.endTime.value,
+        notes: els.blockNotes.value.trim(),
+        color: els.blockColor.value,
+        tasks: cleanTasks,
+        repeat_mode: repeatMode,
+        block_date: repeatMode === 'once' ? dateKey() : null,
+        position_x: 20 + (state.templates.length % 3) * 360,
+        position_y: 20 + Math.floor(state.templates.length / 3) * 225,
+        width: 340,
+        height: 188,
         is_active: true
-      };
-      block.title = els.blockTitle.value.trim();
-      block.start_time = els.startTime.value;
-      block.end_time = els.endTime.value;
-      block.notes = els.blockNotes.value.trim();
-      block.color = els.blockColor.value;
-      if (!existing) state.blocks.push(block);
-      await saveBlock(block);
+      });
+      state.templates.push(block);
+      await saveTemplate(block);
       closeBlockModal();
       render();
-      showToast(existing ? 'تم تعديل البلوك.' : 'تم إضافة البلوك وهيتكرر كل يوم.');
+      showToast(repeatMode === 'everyday' ? 'تم إضافة البلوك وهيتكرر كل يوم.' : 'تم إضافة البلوك لليوم الحالي فقط.');
     }
 
     function changeDate(delta) {
       const d = new Date(state.currentDate);
       d.setDate(d.getDate() + delta);
       state.currentDate = d;
-      if (state.cloudReady) loadCloudData().then(render); else render();
+      render();
     }
 
     function openSettings() {
@@ -1378,7 +1343,6 @@ using (auth.uid() = user_id);`;
       els.sqlBox.textContent = SQL_SCHEMA;
       els.settingsModal.classList.remove('hidden');
     }
-
     function closeSettings() { els.settingsModal.classList.add('hidden'); }
 
     async function saveSupabaseConfig() {
@@ -1410,7 +1374,7 @@ using (auth.uid() = user_id);`;
       if (password.length < 6) return showToast('الباسورد لازم يكون 6 حروف أو أكتر.');
       const { error } = await state.client.auth.signUp({ email, password });
       if (error) return showToast(error.message);
-      showToast('تم إنشاء الحساب. لو تأكيد الإيميل مقفول هتتسجل فورًا، ولو مفتوح راجع الميل مرة واحدة فقط.');
+      showToast('تم إنشاء الحساب. لو تأكيد الإيميل مقفول هتتسجل فورًا.');
     }
 
     async function sendMagicLink() {
@@ -1418,10 +1382,7 @@ using (auth.uid() = user_id);`;
       if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
       const email = els.loginEmail.value.trim();
       if (!email) return showToast('اكتب الإيميل الأول.');
-      const { error } = await state.client.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: window.location.href.split('#')[0] }
-      });
+      const { error } = await state.client.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href.split('#')[0] } });
       if (error) return showToast(error.message);
       showToast('تم إرسال لينك الدخول على الإيميل.');
     }
@@ -1447,8 +1408,7 @@ using (auth.uid() = user_id);`;
     function bindEvents() {
       document.getElementById('addBlockBtn').onclick = () => openBlockModal();
       document.getElementById('mobileAddBtn').onclick = () => openBlockModal();
-      const mobileSettingsBtn = document.getElementById('mobileSettingsBtn');
-      if (mobileSettingsBtn) mobileSettingsBtn.onclick = openSettings;
+      document.getElementById('mobileSettingsBtn').onclick = openSettings;
       document.getElementById('themeBtn').onclick = () => setTheme(state.theme === 'dark' ? 'light' : 'dark');
       document.getElementById('toggleThemeSettingsBtn').onclick = () => setTheme(state.theme === 'dark' ? 'light' : 'dark');
       document.getElementById('prevDayBtn').onclick = () => changeDate(-1);
@@ -1463,8 +1423,10 @@ using (auth.uid() = user_id);`;
       document.getElementById('sendMagicBtn').onclick = sendMagicLink;
       document.getElementById('logoutBtn').onclick = logout;
       document.getElementById('clearCloudConfigBtn').onclick = clearCloudConfig;
+      els.addTaskLineBtn.onclick = () => { state.modalTasks.push({ id: taskId(), text: '' }); renderTasksEditor(); };
       els.blockForm.addEventListener('submit', handleBlockSubmit);
-      els.deleteBlockBtn.onclick = () => state.editingId && deleteBlock(state.editingId);
+      els.deleteTodayBtn.onclick = () => state.editingId && deleteBlockToday(state.editingId);
+      els.deleteSeriesBtn.onclick = () => state.editingId && deleteFullSeries(state.editingId);
       document.querySelectorAll('[data-close-modal]').forEach(btn => btn.onclick = closeBlockModal);
       document.querySelectorAll('[data-close-settings]').forEach(btn => btn.onclick = closeSettings);
       document.querySelectorAll('[data-view-btn]').forEach(btn => btn.onclick = () => {
@@ -1474,9 +1436,7 @@ using (auth.uid() = user_id);`;
       });
       els.blockModal.addEventListener('click', e => { if (e.target === els.blockModal) closeBlockModal(); });
       els.settingsModal.addEventListener('click', e => { if (e.target === els.settingsModal) closeSettings(); });
-      window.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeBlockModal(); closeSettings(); }
-      });
+      window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeBlockModal(); closeSettings(); } });
       window.addEventListener('resize', () => { if (state.view === 'board') render(); });
     }
 
