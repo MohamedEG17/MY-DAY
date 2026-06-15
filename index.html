@@ -6,9 +6,6 @@
   <meta name="theme-color" content="#111827" />
   <title>Time Blocking System</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-1: #f7f8ff;
@@ -30,7 +27,7 @@
       --radius-xl: 32px;
       --radius-lg: 24px;
       --radius-md: 18px;
-      --font: "IBM Plex Sans Arabic", "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font: "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     [data-theme="dark"] {
@@ -707,21 +704,21 @@
     }
 
     @media (max-width: 1080px) {
-      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 18px; }
+      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 96px; }
       .sidebar { display: none; }
-      .topbar { position: static; top: auto; min-height: auto; padding: 16px; align-items: flex-start; }
+      .topbar { top: 12px; min-height: auto; padding: 16px; align-items: flex-start; }
       .date-area h2 { font-size: 34px; }
       .top-actions .desktop-only { display: none; }
       .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .board { min-height: 620px; }
-      .mobile-bottom { display: flex; position: static; inset-inline: auto; bottom: auto; margin: 0 12px calc(12px + env(safe-area-inset-bottom)); width: auto; }
+      .mobile-bottom { display: flex; }
       .week-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 680px) {
       body::before { display: none; }
-      .app-shell { padding: 10px; padding-bottom: 12px; }
-      .topbar { border-radius: 26px; flex-direction: column; gap: 14px; position: static; top: auto; }
+      .app-shell { padding: 10px; padding-bottom: 94px; }
+      .topbar { border-radius: 26px; flex-direction: column; gap: 14px; position: sticky; }
       .top-actions { width: 100%; justify-content: stretch; }
       .top-actions button { flex: 1; }
       .date-area h2 { font-size: 30px; line-height: 1.12; }
@@ -889,7 +886,7 @@
 
       <div class="settings-section">
         <h4>ربط Supabase اختياري</h4>
-        <p>لو عايز تفتح نفس البيانات من الموبايل والكمبيوتر، اعمل مشروع Supabase وشغل SQL الموجود تحت، وبعدها حط URL و anon key هنا وسجل دخول بالإيميل.</p>
+        <p>لو عايز تفتح نفس البيانات من الموبايل والكمبيوتر، اعمل مشروع Supabase وشغل SQL الموجود تحت، وبعدها حط URL و anon key هنا. تقدر تدخل بباسورد بدل Magic Link.</p>
         <div class="form-grid">
           <div class="form-row full">
             <label for="supabaseUrl">Supabase URL</label>
@@ -901,16 +898,23 @@
           </div>
           <div class="form-row full">
             <label for="loginEmail">Email Login</label>
-            <input id="loginEmail" type="email" placeholder="you@example.com" dir="ltr" />
+            <input id="loginEmail" type="email" placeholder="you@example.com" dir="ltr" autocomplete="username" />
           </div>
           <div class="form-row full">
-            <label for="redirectUrl">Login Redirect URL</label>
+            <label for="loginPassword">Password Login</label>
+            <input id="loginPassword" type="password" placeholder="اكتب الباسورد" dir="ltr" autocomplete="current-password" />
+            <p class="form-hint">الطريقة الأسهل بدون لينك إيميل: اعمل User من Supabase Dashboard بباسورد، أو عطّل Confirm email مؤقتًا واستخدم إنشاء حساب.</p>
+          </div>
+          <div class="form-row full">
+            <label for="redirectUrl">Login Redirect URL - للـ Magic Link فقط</label>
             <input id="redirectUrl" placeholder="https://username.github.io/repository-name/" dir="ltr" />
-            <p class="form-hint">مهم: حط لينك GitHub Pages هنا. لو اتبعت Magic Link من localhost هيرجعك على localhost ومش هيفتح على الموبايل.</p>
+            <p class="form-hint">استخدمها فقط لو هتدخل بـ Magic Link. دخول الباسورد لا يحتاج Redirect.</p>
           </div>
         </div>
         <div class="modal-actions">
           <button class="primary-btn" id="saveSupabaseBtn" type="button">حفظ الإعدادات</button>
+          <button class="primary-btn" id="passwordLoginBtn" type="button">دخول بالباسورد</button>
+          <button class="soft-btn" id="passwordSignupBtn" type="button">إنشاء حساب بالباسورد</button>
           <button class="soft-btn" id="sendMagicBtn" type="button">إرسال Magic Link</button>
           <button class="soft-btn" id="logoutBtn" type="button">Logout</button>
           <button class="soft-btn" id="clearCloudConfigBtn" type="button">رجوع Local</button>
@@ -1104,6 +1108,7 @@ using (auth.uid() = user_id);`;
       supabaseUrl: document.getElementById('supabaseUrl'),
       supabaseKey: document.getElementById('supabaseKey'),
       loginEmail: document.getElementById('loginEmail'),
+      loginPassword: document.getElementById('loginPassword'),
       redirectUrl: document.getElementById('redirectUrl'),
       sqlBox: document.getElementById('sqlBox')
     };
@@ -1881,6 +1886,43 @@ using (auth.uid() = user_id);`;
       render();
     }
 
+    async function loginWithPassword() {
+      await saveSupabaseConfig();
+      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
+      const email = els.loginEmail.value.trim();
+      const password = els.loginPassword.value;
+      if (!email || !password) return showToast('اكتب الإيميل والباسورد.');
+      localStorage.setItem('tb_login_email', email);
+      const { data, error } = await state.client.auth.signInWithPassword({ email, password });
+      if (error) return showToast(error.message);
+      state.user = data.user;
+      await loadCloudData();
+      setSyncStatus('ok', 'Cloud Sync');
+      showToast('تم تسجيل الدخول بالباسورد.');
+      render();
+    }
+
+    async function signupWithPassword() {
+      await saveSupabaseConfig();
+      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
+      const email = els.loginEmail.value.trim();
+      const password = els.loginPassword.value;
+      if (!email || !password) return showToast('اكتب الإيميل والباسورد.');
+      if (password.length < 6) return showToast('الباسورد لازم يكون 6 حروف أو أكتر.');
+      localStorage.setItem('tb_login_email', email);
+      const { data, error } = await state.client.auth.signUp({ email, password });
+      if (error) return showToast(error.message);
+      if (data.session && data.user) {
+        state.user = data.user;
+        await loadCloudData();
+        setSyncStatus('ok', 'Cloud Sync');
+        showToast('تم إنشاء الحساب وتسجيل الدخول.');
+        render();
+      } else {
+        showToast('تم إنشاء الحساب. لو Supabase طالب تأكيد إيميل، عطّل Confirm email أو أكّد الحساب من Dashboard.');
+      }
+    }
+
     async function sendMagicLink() {
       await saveSupabaseConfig();
       if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
@@ -1930,6 +1972,8 @@ using (auth.uid() = user_id);`;
       document.getElementById('settingsBtnTop').onclick = openSettings;
       document.getElementById('saveSupabaseBtn').onclick = saveSupabaseConfig;
       document.getElementById('sendMagicBtn').onclick = sendMagicLink;
+      document.getElementById('passwordLoginBtn').onclick = loginWithPassword;
+      document.getElementById('passwordSignupBtn').onclick = signupWithPassword;
       document.getElementById('logoutBtn').onclick = logout;
       document.getElementById('clearCloudConfigBtn').onclick = clearCloudConfig;
       els.blockForm.addEventListener('submit', handleBlockSubmit);
