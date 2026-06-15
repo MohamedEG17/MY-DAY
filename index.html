@@ -1060,6 +1060,7 @@ using (auth.uid() = user_id);`;
     // Supabase config. This is the public anon key, not the service_role secret.
     const DEFAULT_SUPABASE_URL = 'https://shyzestwmrqgjxveqylo.supabase.co';
     const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeXplc3R3bXJxZ2p4dmVxeWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjUwMjYsImV4cCI6MjA5NzEwMTAyNn0.Pi4e9N6bHPWcLR8fHQtRgOWwa3KbKPjghu1EGYRmYqE';
+    const DEFAULT_LOGIN_EMAIL = 'mohaesmat1719@gmail.com';
 
     const els = {
       body: document.body,
@@ -1288,6 +1289,7 @@ using (auth.uid() = user_id);`;
       const key = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
       els.supabaseUrl.value = url;
       els.supabaseKey.value = key;
+      if (!els.loginEmail.value) els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL;
       if (!url || !key || !window.supabase) {
         state.client = null;
         state.user = null;
@@ -1824,6 +1826,7 @@ using (auth.uid() = user_id);`;
     function openSettings() {
       els.supabaseUrl.value = localStorage.getItem('tb_supabase_url') || DEFAULT_SUPABASE_URL || '';
       els.supabaseKey.value = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
+      els.loginEmail.value = localStorage.getItem('tb_login_email') || els.loginEmail.value || DEFAULT_LOGIN_EMAIL;
       els.sqlBox.textContent = SQL_SCHEMA;
       els.settingsModal.classList.remove('hidden');
     }
@@ -1843,6 +1846,7 @@ using (auth.uid() = user_id);`;
       if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
       const email = els.loginEmail.value.trim();
       if (!email) return showToast('اكتب الإيميل الأول.');
+      localStorage.setItem('tb_login_email', email);
       const { error } = await state.client.auth.signInWithOtp({
         email,
         options: { emailRedirectTo: window.location.href.split('#')[0] }
@@ -1907,6 +1911,7 @@ using (auth.uid() = user_id);`;
       setTheme(state.theme);
       localLoad();
       bindEvents();
+      els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL;
       await initCloud();
       render();
     }
