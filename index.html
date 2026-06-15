@@ -900,6 +900,11 @@
             <label for="loginEmail">Email Login</label>
             <input id="loginEmail" type="email" placeholder="you@example.com" dir="ltr" />
           </div>
+          <div class="form-row full">
+            <label for="redirectUrl">Login Redirect URL</label>
+            <input id="redirectUrl" placeholder="https://username.github.io/repository-name/" dir="ltr" />
+            <p class="form-hint">مهم: حط لينك GitHub Pages هنا. لو اتبعت Magic Link من localhost هيرجعك على localhost ومش هيفتح على الموبايل.</p>
+          </div>
         </div>
         <div class="modal-actions">
           <button class="primary-btn" id="saveSupabaseBtn" type="button">حفظ الإعدادات</button>
@@ -1061,6 +1066,7 @@ using (auth.uid() = user_id);`;
     const DEFAULT_SUPABASE_URL = 'https://shyzestwmrqgjxveqylo.supabase.co';
     const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeXplc3R3bXJxZ2p4dmVxeWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjUwMjYsImV4cCI6MjA5NzEwMTAyNn0.Pi4e9N6bHPWcLR8fHQtRgOWwa3KbKPjghu1EGYRmYqE';
     const DEFAULT_LOGIN_EMAIL = 'mohaesmat1719@gmail.com';
+    const DEFAULT_REDIRECT_URL = '';
 
     const els = {
       body: document.body,
@@ -1095,6 +1101,7 @@ using (auth.uid() = user_id);`;
       supabaseUrl: document.getElementById('supabaseUrl'),
       supabaseKey: document.getElementById('supabaseKey'),
       loginEmail: document.getElementById('loginEmail'),
+      redirectUrl: document.getElementById('redirectUrl'),
       sqlBox: document.getElementById('sqlBox')
     };
 
@@ -1823,10 +1830,36 @@ using (auth.uid() = user_id);`;
       if (state.cloudReady) loadCloudData().then(render); else render();
     }
 
+    function cleanRedirectUrl(url) {
+      return String(url || '').split('#')[0].trim();
+    }
+
+    function isLocalRedirect(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'file:' || parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname === '0.0.0.0';
+      } catch {
+        return true;
+      }
+    }
+
+    function currentPublicUrl() {
+      const current = cleanRedirectUrl(window.location.href);
+      return isLocalRedirect(current) ? '' : current;
+    }
+
+    function getLoginRedirectUrl() {
+      const saved = cleanRedirectUrl(localStorage.getItem('tb_redirect_url') || DEFAULT_REDIRECT_URL || '');
+      if (saved && !isLocalRedirect(saved)) return saved;
+      const current = currentPublicUrl();
+      return current || '';
+    }
+
     function openSettings() {
       els.supabaseUrl.value = localStorage.getItem('tb_supabase_url') || DEFAULT_SUPABASE_URL || '';
       els.supabaseKey.value = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
       els.loginEmail.value = localStorage.getItem('tb_login_email') || els.loginEmail.value || DEFAULT_LOGIN_EMAIL;
+      els.redirectUrl.value = localStorage.getItem('tb_redirect_url') || DEFAULT_REDIRECT_URL || currentPublicUrl() || '';
       els.sqlBox.textContent = SQL_SCHEMA;
       els.settingsModal.classList.remove('hidden');
     }
@@ -1836,6 +1869,10 @@ using (auth.uid() = user_id);`;
     async function saveSupabaseConfig() {
       localStorage.setItem('tb_supabase_url', els.supabaseUrl.value.trim());
       localStorage.setItem('tb_supabase_key', els.supabaseKey.value.trim());
+      if (els.redirectUrl) {
+        const redirect = cleanRedirectUrl(els.redirectUrl.value);
+        if (redirect) localStorage.setItem('tb_redirect_url', redirect);
+      }
       await initCloud();
       showToast('تم حفظ إعدادات Supabase.');
       render();
@@ -1847,9 +1884,13 @@ using (auth.uid() = user_id);`;
       const email = els.loginEmail.value.trim();
       if (!email) return showToast('اكتب الإيميل الأول.');
       localStorage.setItem('tb_login_email', email);
+      const redirectTo = getLoginRedirectUrl();
+      if (!redirectTo) {
+        return showToast('افتح الصفحة من لينك GitHub Pages أو حط لينك GitHub Pages في Login Redirect URL، لأن localhost مش هيفتح من الإيميل.');
+      }
       const { error } = await state.client.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.href.split('#')[0] }
+        options: { emailRedirectTo: redirectTo }
       });
       if (error) return showToast(error.message);
       showToast('تم إرسال لينك الدخول على الإيميل.');
