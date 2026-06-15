@@ -7,8 +7,6 @@
   <title>Time Blocking System</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap');
-
     :root {
       --bg-1: #f7f8ff;
       --bg-2: #e8f1ff;
@@ -29,7 +27,7 @@
       --radius-xl: 32px;
       --radius-lg: 24px;
       --radius-md: 18px;
-      --font: "IBM Plex Sans Arabic", "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font: "Cairo", "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     [data-theme="dark"] {
@@ -320,10 +318,7 @@
 
     .block-card {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 330px;
-      max-width: calc(100% - 16px);
       min-height: 172px;
       border-radius: 28px;
       padding: 18px;
@@ -366,77 +361,6 @@
     .block-card.done .status-pill { background: rgba(22,163,74,.18); color: var(--success); }
     .block-card.missed { filter: saturate(.7); opacity: .82; }
     .block-card.missed .status-pill { background: rgba(239,68,68,.16); color: var(--danger); }
-    .block-card.highlight.done, .list-card.highlight.done {
-      border-color: rgba(22,163,74,.42);
-      background:
-        linear-gradient(135deg, rgba(22,163,74,.22), rgba(255,255,255,.08)),
-        linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.06));
-      box-shadow: 0 24px 70px rgba(22,163,74,.20), var(--shadow-soft);
-    }
-    .block-card.highlight.missed, .list-card.highlight.missed {
-      border-color: rgba(239,68,68,.42);
-      background:
-        linear-gradient(135deg, rgba(239,68,68,.20), rgba(255,255,255,.06)),
-        linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.05));
-      box-shadow: 0 24px 70px rgba(239,68,68,.18), var(--shadow-soft);
-    }
-    .list-card.done .status-pill { background: rgba(22,163,74,.18); color: var(--success); }
-    .list-card.missed .status-pill { background: rgba(239,68,68,.16); color: var(--danger); }
-
-    .pill-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .repeat-pill {
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      border-radius: 999px;
-      padding: 8px 12px;
-      background: color-mix(in srgb, var(--block-color) 18%, transparent);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 950;
-    }
-
-    .task-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .task-check {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.12);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 17px;
-      line-height: 1.45;
-      font-weight: 850;
-      cursor: pointer;
-    }
-
-    .task-check input {
-      width: 20px;
-      min-height: 20px;
-      height: 20px;
-      margin: 3px 0 0;
-      accent-color: var(--success);
-      flex: 0 0 auto;
-    }
-
-    .task-check input:checked + span {
-      text-decoration: line-through;
-      opacity: .72;
-    }
 
     .block-content { position: relative; z-index: 2; display: grid; gap: 12px; }
 
@@ -604,50 +528,6 @@
     textarea { min-height: 128px; resize: vertical; line-height: 1.55; }
     input[type="color"] { padding: 5px; min-height: 58px; }
 
-    .tasks-editor {
-      display: grid;
-      gap: 10px;
-    }
-
-    .task-editor-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .task-editor-row .mini-btn { min-height: 54px; }
-    .add-task-btn { width: fit-content; }
-
-    .switch-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px;
-      border-radius: 18px;
-      background: var(--field);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 18px;
-      line-height: 1.5;
-    }
-
-    .switch-row input {
-      width: 22px;
-      min-height: 22px;
-      height: 22px;
-      accent-color: var(--success);
-      flex: 0 0 auto;
-    }
-
-    .form-hint {
-      margin: -2px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-      font-weight: 750;
-    }
-
     .modal-actions { display: flex; justify-content: flex-start; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
 
     .toast {
@@ -679,7 +559,7 @@
       gap: 8px;
       justify-content: space-between;
     }
-    .mobile-bottom button { flex: 1; min-height: 54px; border-radius: 18px; font-size: 15px; padding: 8px 6px; }
+    .mobile-bottom button { flex: 1; min-height: 54px; border-radius: 18px; font-size: 15px; padding: 7px 5px; white-space: nowrap; }
 
     .settings-section {
       border-radius: 24px;
@@ -706,20 +586,11 @@
     }
 
     @media (max-width: 1080px) {
-      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-top: 166px; padding-bottom: 110px; }
+      .app-shell { grid-template-columns: 1fr; padding: 12px; padding-bottom: 96px; }
       .sidebar { display: none; }
-      .topbar {
-        position: fixed;
-        top: calc(10px + env(safe-area-inset-top));
-        left: 12px;
-        right: 12px;
-        min-height: auto;
-        padding: 16px;
-        align-items: flex-start;
-        z-index: 80;
-      }
+      .topbar { top: 12px; min-height: auto; padding: 16px; align-items: flex-start; }
       .date-area h2 { font-size: 34px; }
-      .top-actions .desktop-only { display: inline-flex; }
+      .top-actions .desktop-only { display: none; }
       .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .board { min-height: 620px; }
       .mobile-bottom { display: flex; }
@@ -728,12 +599,26 @@
 
     @media (max-width: 680px) {
       body::before { display: none; }
-      .app-shell { padding: 10px; padding-top: 178px; padding-bottom: 106px; }
-      .topbar { border-radius: 26px; flex-direction: column; gap: 14px; position: fixed; left: 10px; right: 10px; }
-      .top-actions { width: 100%; justify-content: stretch; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .top-actions button { flex: unset; width: 100%; padding-inline: 10px; }
-      .top-actions #addBlockBtn { grid-column: span 2; }
-      .top-actions #settingsBtnTop { grid-column: span 1; }
+      .app-shell { padding: 148px 10px 108px; }
+      .topbar {
+        border-radius: 26px;
+        flex-direction: column;
+        gap: 14px;
+        position: fixed;
+        top: calc(10px + env(safe-area-inset-top));
+        left: 10px;
+        right: 10px;
+        z-index: 90;
+      }
+      .mobile-bottom {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        z-index: 90;
+      }
+      .top-actions { width: 100%; justify-content: stretch; }
+      .top-actions button { flex: 1; }
       .date-area h2 { font-size: 30px; line-height: 1.12; }
       .date-area p { font-size: 16px; }
       .stats-grid { gap: 10px; }
@@ -744,12 +629,10 @@
       .board-head { flex-direction: column; align-items: flex-start; }
       .board-head h3 { font-size: 24px; }
       .board { min-height: 720px; border-radius: 22px; }
-      .block-card { width: calc(100% - 24px) !important; max-width: calc(100% - 24px); min-height: 168px; padding: 16px; border-radius: 24px; }
+      .block-card { width: calc(100% - 24px); min-height: 168px; padding: 16px; border-radius: 24px; }
       .block-title { font-size: 23px; }
       .block-notes { font-size: 18px; }
       .form-grid { grid-template-columns: 1fr; }
-      .task-editor-row { grid-template-columns: 1fr; }
-      .add-task-btn { width: 100%; }
       .modal { border-radius: 28px; padding: 18px; }
       .modal-head h3 { font-size: 28px; }
       input, textarea, select { font-size: 18px; min-height: 56px; }
@@ -797,7 +680,7 @@
           <button class="icon-btn" id="nextDayBtn" title="اليوم التالي">‹</button>
           <button class="icon-btn" id="themeBtn" title="Dark / Light">☾</button>
           <button class="primary-btn" id="addBlockBtn">+ إضافة بلوك</button>
-          <button class="soft-btn desktop-only" id="settingsBtnTop">Supabase</button>
+          <button class="soft-btn" id="settingsBtnTop">Supabase</button>
         </div>
       </header>
 
@@ -849,14 +732,8 @@
           <input id="endTime" type="time" required />
         </div>
         <div class="form-row full">
-          <label for="blockNotes">ملاحظات عامة</label>
+          <label for="blockNotes">ملاحظات</label>
           <textarea id="blockNotes" placeholder="اكتب تفاصيل التاسك أو الهدف من الفترة"></textarea>
-        </div>
-        <div class="form-row full">
-          <label>تشيك بوكس داخل الملاحظات</label>
-          <div id="tasksEditor" class="tasks-editor"></div>
-          <button class="soft-btn add-task-btn" id="addTaskBtn" type="button">+ إضافة مهمة فرعية</button>
-          <p class="form-hint">استخدمها لو البلوك فيه كذا مهمة صغيرة. كل تشيك بيتحفظ لليوم الحالي فقط.</p>
         </div>
         <div class="form-row">
           <label for="blockColor">لون البلوك</label>
@@ -865,22 +742,14 @@
         <div class="form-row">
           <label for="repeatMode">التكرار</label>
           <select id="repeatMode">
-            <option value="everyday">يتكرر كل يوم</option>
-            <option value="once">اليوم الحالي فقط</option>
+            <option value="everyday">كل يوم</option>
           </select>
-        </div>
-        <div class="form-row full">
-          <label class="switch-row" for="highlightToggle">
-            <input id="highlightToggle" type="checkbox" checked />
-            <span>تفعيل هايلايت أخضر عند Done وأحمر عند Missed</span>
-          </label>
         </div>
       </div>
       <div class="modal-actions">
         <button class="primary-btn" type="submit">حفظ</button>
         <button class="soft-btn" type="button" data-close-modal>إلغاء</button>
         <button class="soft-btn hidden" type="button" id="deleteBlockBtn">حذف البلوك</button>
-        <button class="soft-btn hidden" type="button" id="deleteSeriesBtn">حذف التكرار بالكامل</button>
       </div>
     </form>
   </div>
@@ -914,9 +783,16 @@
             <label for="loginEmail">Email Login</label>
             <input id="loginEmail" type="email" placeholder="you@example.com" dir="ltr" />
           </div>
+          <div class="form-row full">
+            <label for="loginPassword">Password Login</label>
+            <input id="loginPassword" type="password" placeholder="اكتب الباسورد" dir="ltr" autocomplete="current-password" />
+            <p class="form-hint">استخدم نفس الإيميل والباسورد على الكمبيوتر والموبايل عشان البيانات تتزامن.</p>
+          </div>
         </div>
         <div class="modal-actions">
           <button class="primary-btn" id="saveSupabaseBtn" type="button">حفظ الإعدادات</button>
+          <button class="primary-btn" id="passwordLoginBtn" type="button">دخول بالباسورد</button>
+          <button class="soft-btn" id="passwordSignupBtn" type="button">إنشاء حساب بالباسورد</button>
           <button class="soft-btn" id="sendMagicBtn" type="button">إرسال Magic Link</button>
           <button class="soft-btn" id="logoutBtn" type="button">Logout</button>
           <button class="soft-btn" id="clearCloudConfigBtn" type="button">رجوع Local</button>
@@ -934,12 +810,7 @@
   <div id="toast" class="toast hidden"></div>
 
   <script>
-    const SQL_SCHEMA = `do $$
-begin
-  create type block_status as enum ('pending', 'done', 'missed');
-exception
-  when duplicate_object then null;
-end $$;
+    const SQL_SCHEMA = `create type block_status as enum ('pending', 'done', 'missed');
 
 create table if not exists public.recurring_blocks (
   id uuid primary key default gen_random_uuid(),
@@ -953,40 +824,9 @@ create table if not exists public.recurring_blocks (
   position_y integer not null default 20,
   width integer not null default 330,
   height integer not null default 172,
-  repeat_mode text not null default 'everyday' check (repeat_mode in ('everyday', 'once')),
-  block_date date,
-  highlight_enabled boolean not null default true,
-  tasks jsonb not null default '[]'::jsonb,
   is_active boolean not null default true,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
-);
-
-alter table public.recurring_blocks add column if not exists repeat_mode text not null default 'everyday';
-alter table public.recurring_blocks add column if not exists block_date date;
-alter table public.recurring_blocks add column if not exists highlight_enabled boolean not null default true;
-alter table public.recurring_blocks add column if not exists tasks jsonb not null default '[]'::jsonb;
-
-create table if not exists public.block_overrides (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
-  override_date date not null,
-  title text,
-  notes text,
-  start_time time,
-  end_time time,
-  color text,
-  position_x integer,
-  position_y integer,
-  width integer,
-  height integer,
-  highlight_enabled boolean,
-  tasks jsonb,
-  is_deleted boolean not null default false,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now(),
-  unique(recurring_block_id, override_date)
 );
 
 create table if not exists public.block_completions (
@@ -995,85 +835,52 @@ create table if not exists public.block_completions (
   recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
   completion_date date not null,
   status block_status not null default 'pending',
-  task_checks jsonb not null default '{}'::jsonb,
   checked_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
   unique(recurring_block_id, completion_date)
 );
 
-alter table public.block_completions add column if not exists task_checks jsonb not null default '{}'::jsonb;
-
 alter table public.recurring_blocks enable row level security;
-alter table public.block_overrides enable row level security;
 alter table public.block_completions enable row level security;
 
-drop policy if exists "Users can view own recurring blocks" on public.recurring_blocks;
 create policy "Users can view own recurring blocks"
 on public.recurring_blocks for select
 using (auth.uid() = user_id);
 
-drop policy if exists "Users can insert own recurring blocks" on public.recurring_blocks;
 create policy "Users can insert own recurring blocks"
 on public.recurring_blocks for insert
 with check (auth.uid() = user_id);
 
-drop policy if exists "Users can update own recurring blocks" on public.recurring_blocks;
 create policy "Users can update own recurring blocks"
 on public.recurring_blocks for update
 using (auth.uid() = user_id);
 
-drop policy if exists "Users can delete own recurring blocks" on public.recurring_blocks;
 create policy "Users can delete own recurring blocks"
 on public.recurring_blocks for delete
 using (auth.uid() = user_id);
 
-drop policy if exists "Users can view own overrides" on public.block_overrides;
-create policy "Users can view own overrides"
-on public.block_overrides for select
-using (auth.uid() = user_id);
-
-drop policy if exists "Users can insert own overrides" on public.block_overrides;
-create policy "Users can insert own overrides"
-on public.block_overrides for insert
-with check (auth.uid() = user_id);
-
-drop policy if exists "Users can update own overrides" on public.block_overrides;
-create policy "Users can update own overrides"
-on public.block_overrides for update
-using (auth.uid() = user_id);
-
-drop policy if exists "Users can delete own overrides" on public.block_overrides;
-create policy "Users can delete own overrides"
-on public.block_overrides for delete
-using (auth.uid() = user_id);
-
-drop policy if exists "Users can view own completions" on public.block_completions;
 create policy "Users can view own completions"
 on public.block_completions for select
 using (auth.uid() = user_id);
 
-drop policy if exists "Users can insert own completions" on public.block_completions;
 create policy "Users can insert own completions"
 on public.block_completions for insert
 with check (auth.uid() = user_id);
 
-drop policy if exists "Users can update own completions" on public.block_completions;
 create policy "Users can update own completions"
 on public.block_completions for update
 using (auth.uid() = user_id);
 
-drop policy if exists "Users can delete own completions" on public.block_completions;
 create policy "Users can delete own completions"
 on public.block_completions for delete
 using (auth.uid() = user_id);`;
 
     const COLORS = ['#6366f1', '#0ea5e9', '#ec4899', '#22c55e', '#f97316', '#a855f7', '#14b8a6', '#f43f5e', '#84cc16', '#eab308', '#06b6d4', '#8b5cf6'];
     const SNAP = 16;
-
-    // Supabase config. This is the public anon key, not the service_role secret.
     const DEFAULT_SUPABASE_URL = 'https://shyzestwmrqgjxveqylo.supabase.co';
     const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeXplc3R3bXJxZ2p4dmVxeWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjUwMjYsImV4cCI6MjA5NzEwMTAyNn0.Pi4e9N6bHPWcLR8fHQtRgOWwa3KbKPjghu1EGYRmYqE';
+    const DEFAULT_LOGIN_EMAIL = 'mohaesmat1719@gmail.com';
 
     const els = {
       body: document.body,
@@ -1095,11 +902,7 @@ using (auth.uid() = user_id);`;
       blockNotes: document.getElementById('blockNotes'),
       blockColor: document.getElementById('blockColor'),
       repeatMode: document.getElementById('repeatMode'),
-      highlightToggle: document.getElementById('highlightToggle'),
-      tasksEditor: document.getElementById('tasksEditor'),
-      addTaskBtn: document.getElementById('addTaskBtn'),
       deleteBlockBtn: document.getElementById('deleteBlockBtn'),
-      deleteSeriesBtn: document.getElementById('deleteSeriesBtn'),
       settingsModal: document.getElementById('settingsModal'),
       toast: document.getElementById('toast'),
       syncDot: document.getElementById('syncDot'),
@@ -1108,6 +911,7 @@ using (auth.uid() = user_id);`;
       supabaseUrl: document.getElementById('supabaseUrl'),
       supabaseKey: document.getElementById('supabaseKey'),
       loginEmail: document.getElementById('loginEmail'),
+      loginPassword: document.getElementById('loginPassword'),
       sqlBox: document.getElementById('sqlBox')
     };
 
@@ -1116,7 +920,6 @@ using (auth.uid() = user_id);`;
       theme: localStorage.getItem('tb_theme') || 'dark',
       currentDate: new Date(),
       blocks: [],
-      overrides: {},
       completions: {},
       editingId: null,
       client: null,
@@ -1127,43 +930,16 @@ using (auth.uid() = user_id);`;
     function pad(n) { return String(n).padStart(2, '0'); }
     function dateKey(d = state.currentDate) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
     function toTime(t) { return (t || '').slice(0,5); }
-    function formatDateTitle(d) { return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); }
-    function formatDateSubtitle(d) { return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); }
+    function formatDateTitle(d) {
+      return d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+    function formatDateSubtitle(d) {
+      return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
     function uid() { return (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2)); }
     function snap(n) { return Math.round(n / SNAP) * SNAP; }
     function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-    function overrideKey(blockId, day = dateKey()) { return `${blockId}_${day}`; }
-
-    function normalizeTasks(tasks) {
-      if (!Array.isArray(tasks)) return [];
-      return tasks
-        .map(t => typeof t === 'string' ? { id: uid(), text: t } : { id: t.id || uid(), text: (t.text || '').trim() })
-        .filter(t => t.text);
-    }
-
-    function normalizeBlock(block) {
-      return {
-        ...block,
-        repeat_mode: block.repeat_mode || 'everyday',
-        block_date: block.block_date || null,
-        highlight_enabled: block.highlight_enabled !== false,
-        tasks: normalizeTasks(block.tasks),
-        is_active: block.is_active !== false,
-        width: block.width || 330,
-        height: block.height || 172,
-        position_x: block.position_x ?? 20,
-        position_y: block.position_y ?? 20
-      };
-    }
-
-    function getCompletion(blockId, day = dateKey()) {
-      const raw = state.completions[overrideKey(blockId, day)];
-      if (!raw) return { status: 'pending', task_checks: {} };
-      if (typeof raw === 'string') return { status: raw, task_checks: {} };
-      return { status: raw.status || 'pending', task_checks: raw.task_checks || {} };
-    }
-    function getStatus(blockId, day = dateKey()) { return getCompletion(blockId, day).status; }
-    function getTaskChecks(blockId, day = dateKey()) { return getCompletion(blockId, day).task_checks || {}; }
+    function getStatus(blockId, day = dateKey()) { return state.completions[`${blockId}_${day}`] || 'pending'; }
 
     function showToast(msg) {
       els.toast.textContent = msg;
@@ -1181,25 +957,22 @@ using (auth.uid() = user_id);`;
 
     function localLoad() {
       const blocks = JSON.parse(localStorage.getItem('tb_blocks') || 'null');
-      const overrides = JSON.parse(localStorage.getItem('tb_overrides') || '{}');
       const completions = JSON.parse(localStorage.getItem('tb_completions') || '{}');
-      state.blocks = Array.isArray(blocks) ? blocks.map(normalizeBlock) : sampleBlocks();
-      state.overrides = overrides || {};
+      state.blocks = Array.isArray(blocks) ? blocks : sampleBlocks();
       state.completions = completions || {};
       if (!blocks) localSave();
     }
 
     function localSave() {
       localStorage.setItem('tb_blocks', JSON.stringify(state.blocks));
-      localStorage.setItem('tb_overrides', JSON.stringify(state.overrides));
       localStorage.setItem('tb_completions', JSON.stringify(state.completions));
     }
 
     function sampleBlocks() {
       return [
-        normalizeBlock({ id: uid(), title: 'شغل عميق', notes: 'أهم تاسكات اليوم بدون مشتتات', start_time: '09:00', end_time: '13:00', color: '#6366f1', position_x: 32, position_y: 32, repeat_mode: 'everyday', tasks: [{ id: uid(), text: 'تحديد أهم تاسك' }, { id: uid(), text: 'قفل المشتتات' }] }),
-        normalizeBlock({ id: uid(), title: 'راحة وغدا', notes: 'فصل بسيط وإعادة شحن', start_time: '13:00', end_time: '14:00', color: '#0ea5e9', position_x: 400, position_y: 64, repeat_mode: 'everyday' }),
-        normalizeBlock({ id: uid(), title: 'مراجعة وتسليمات', notes: 'مراجعة التاسكات والفايلات المطلوبة', start_time: '17:00', end_time: '20:00', color: '#ec4899', position_x: 160, position_y: 270, repeat_mode: 'everyday', tasks: [{ id: uid(), text: 'مراجعة الفايلات' }, { id: uid(), text: 'تسليم النهائي' }] })
+        { id: uid(), title: 'شغل عميق', notes: 'أهم تاسكات اليوم بدون مشتتات', start_time: '09:00', end_time: '13:00', color: '#6366f1', position_x: 32, position_y: 32, width: 330, height: 172, is_active: true },
+        { id: uid(), title: 'راحة وغدا', notes: 'فصل بسيط وإعادة شحن', start_time: '13:00', end_time: '14:00', color: '#0ea5e9', position_x: 400, position_y: 64, width: 330, height: 172, is_active: true },
+        { id: uid(), title: 'مراجعة وتسليمات', notes: 'مراجعة التاسكات والفايلات المطلوبة', start_time: '17:00', end_time: '20:00', color: '#ec4899', position_x: 160, position_y: 270, width: 330, height: 172, is_active: true }
       ];
     }
 
@@ -1214,7 +987,7 @@ using (auth.uid() = user_id);`;
     }
 
     function dbToBlock(row) {
-      return normalizeBlock({
+      return {
         id: row.id,
         title: row.title,
         notes: row.notes || '',
@@ -1225,74 +998,24 @@ using (auth.uid() = user_id);`;
         position_y: row.position_y ?? 20,
         width: row.width || 330,
         height: row.height || 172,
-        repeat_mode: row.repeat_mode || 'everyday',
-        block_date: row.block_date || null,
-        highlight_enabled: row.highlight_enabled !== false,
-        tasks: row.tasks || [],
         is_active: row.is_active !== false
-      });
+      };
     }
 
     function blockToDb(block) {
-      const clean = normalizeBlock(block);
       return {
-        id: clean.id,
+        id: block.id,
         user_id: state.user.id,
-        title: clean.title,
-        notes: clean.notes || '',
-        start_time: clean.start_time,
-        end_time: clean.end_time,
-        color: clean.color,
-        position_x: clean.position_x || 20,
-        position_y: clean.position_y || 20,
-        width: clean.width || 330,
-        height: clean.height || 172,
-        repeat_mode: clean.repeat_mode || 'everyday',
-        block_date: clean.repeat_mode === 'once' ? (clean.block_date || dateKey()) : null,
-        highlight_enabled: clean.highlight_enabled !== false,
-        tasks: clean.tasks || [],
-        is_active: clean.is_active !== false,
-        updated_at: new Date().toISOString()
-      };
-    }
-
-    function dbToOverride(row) {
-      return {
-        id: row.id,
-        recurring_block_id: row.recurring_block_id,
-        override_date: row.override_date,
-        title: row.title,
-        notes: row.notes,
-        start_time: row.start_time ? toTime(row.start_time) : null,
-        end_time: row.end_time ? toTime(row.end_time) : null,
-        color: row.color,
-        position_x: row.position_x,
-        position_y: row.position_y,
-        width: row.width,
-        height: row.height,
-        highlight_enabled: row.highlight_enabled,
-        tasks: row.tasks,
-        is_deleted: row.is_deleted === true
-      };
-    }
-
-    function overrideToDb(blockId, day, data) {
-      return {
-        user_id: state.user.id,
-        recurring_block_id: blockId,
-        override_date: day,
-        title: data.title ?? null,
-        notes: data.notes ?? null,
-        start_time: data.start_time ?? null,
-        end_time: data.end_time ?? null,
-        color: data.color ?? null,
-        position_x: data.position_x ?? null,
-        position_y: data.position_y ?? null,
-        width: data.width ?? null,
-        height: data.height ?? null,
-        highlight_enabled: data.highlight_enabled ?? null,
-        tasks: data.tasks ?? null,
-        is_deleted: data.is_deleted === true,
+        title: block.title,
+        notes: block.notes || '',
+        start_time: block.start_time,
+        end_time: block.end_time,
+        color: block.color,
+        position_x: block.position_x || 20,
+        position_y: block.position_y || 20,
+        width: block.width || 330,
+        height: block.height || 172,
+        is_active: block.is_active !== false,
         updated_at: new Date().toISOString()
       };
     }
@@ -1302,6 +1025,7 @@ using (auth.uid() = user_id);`;
       const key = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
       els.supabaseUrl.value = url;
       els.supabaseKey.value = key;
+
       if (!url || !key || !window.supabase) {
         state.client = null;
         state.user = null;
@@ -1309,6 +1033,7 @@ using (auth.uid() = user_id);`;
         setSyncStatus('offline', 'Local Mode');
         return;
       }
+
       try {
         state.client = window.supabase.createClient(url, key);
         const { data } = await state.client.auth.getSession();
@@ -1321,6 +1046,7 @@ using (auth.uid() = user_id);`;
           state.cloudReady = false;
           setSyncStatus('', 'Supabase غير مسجل');
         }
+
         state.client.auth.onAuthStateChange(async (_event, session) => {
           state.user = session?.user || null;
           state.cloudReady = !!state.user;
@@ -1341,6 +1067,7 @@ using (auth.uid() = user_id);`;
 
     async function loadCloudData() {
       if (!state.client || !state.user) return;
+      const day = dateKey();
       const { data: blocks, error: blocksError } = await state.client
         .from('recurring_blocks')
         .select('*')
@@ -1349,84 +1076,29 @@ using (auth.uid() = user_id);`;
         .order('created_at', { ascending: true });
       if (blocksError) {
         console.error(blocksError);
-        showToast('Supabase: شغل SQL الجديد الموجود في الإعدادات.');
+        showToast('Supabase: تأكد إنك شغلت SQL schema.');
         return;
       }
       state.blocks = (blocks || []).map(dbToBlock);
 
-      const { data: overrides, error: overridesError } = await state.client
-        .from('block_overrides')
-        .select('*')
-        .eq('user_id', state.user.id);
-      if (!overridesError) {
-        state.overrides = {};
-        (overrides || []).forEach(o => { state.overrides[overrideKey(o.recurring_block_id, o.override_date)] = dbToOverride(o); });
-      }
-
-      const { data: completions, error: completionsError } = await state.client
+      const { data: completions } = await state.client
         .from('block_completions')
         .select('*')
-        .eq('user_id', state.user.id);
-      if (!completionsError) {
-        state.completions = {};
-        (completions || []).forEach(c => {
-          state.completions[overrideKey(c.recurring_block_id, c.completion_date)] = {
-            status: c.status || 'pending',
-            task_checks: c.task_checks || {}
-          };
-        });
-      }
+        .eq('user_id', state.user.id)
+        .eq('completion_date', day);
+      state.completions = { ...state.completions };
+      (completions || []).forEach(c => { state.completions[`${c.recurring_block_id}_${c.completion_date}`] = c.status; });
       localSave();
     }
 
-    async function saveBaseBlock(block) {
-      const clean = normalizeBlock(block);
-      const idx = state.blocks.findIndex(b => b.id === clean.id);
-      if (idx >= 0) state.blocks[idx] = clean; else state.blocks.push(clean);
+    async function saveBlock(block) {
       localSave();
       if (!state.cloudReady) return;
-      const { error } = await state.client.from('recurring_blocks').upsert(blockToDb(clean));
+      const { error } = await state.client.from('recurring_blocks').upsert(blockToDb(block));
       if (error) { console.error(error); showToast('لم يتم حفظ البلوك على Supabase.'); }
     }
 
-    async function saveOverride(blockId, day, data) {
-      const key = overrideKey(blockId, day);
-      const previous = state.overrides[key] || { recurring_block_id: blockId, override_date: day };
-      state.overrides[key] = { ...previous, ...data, recurring_block_id: blockId, override_date: day };
-      localSave();
-      if (!state.cloudReady) return;
-      const { error } = await state.client
-        .from('block_overrides')
-        .upsert(overrideToDb(blockId, day, state.overrides[key]), { onConflict: 'recurring_block_id,override_date' });
-      if (error) { console.error(error); showToast('لم يتم حفظ تعديل اليوم على Supabase.'); }
-    }
-
-    async function saveVisibleBlock(block, data) {
-      const base = state.blocks.find(b => b.id === block.id);
-      if (!base) return;
-      if ((base.repeat_mode || 'everyday') === 'everyday') {
-        await saveOverride(block.id, block._date || dateKey(), data);
-      } else {
-        Object.assign(base, data);
-        await saveBaseBlock(base);
-      }
-    }
-
     async function deleteBlock(id) {
-      const base = state.blocks.find(b => b.id === id);
-      if (!base) return;
-      const day = dateKey();
-      if ((base.repeat_mode || 'everyday') === 'everyday') {
-        await saveOverride(id, day, { is_deleted: true });
-        delete state.completions[overrideKey(id, day)];
-        if (state.cloudReady) {
-          await state.client.from('block_completions').delete().eq('user_id', state.user.id).eq('recurring_block_id', id).eq('completion_date', day);
-        }
-        closeBlockModal();
-        render();
-        showToast('تم حذف البلوك من اليوم ده فقط. باقي الأيام زي ما هي.');
-        return;
-      }
       state.blocks = state.blocks.filter(b => b.id !== id);
       Object.keys(state.completions).forEach(key => { if (key.startsWith(id + '_')) delete state.completions[key]; });
       localSave();
@@ -1439,55 +1111,23 @@ using (auth.uid() = user_id);`;
       showToast('تم حذف البلوك.');
     }
 
-    async function deleteSeries(id) {
-      const base = state.blocks.find(b => b.id === id);
-      if (!base) return;
-      if (!confirm('متأكد إنك عايز تحذف التكرار بالكامل من كل الأيام؟')) return;
-      state.blocks = state.blocks.filter(b => b.id !== id);
-      Object.keys(state.overrides).forEach(key => { if (key.startsWith(id + '_')) delete state.overrides[key]; });
-      Object.keys(state.completions).forEach(key => { if (key.startsWith(id + '_')) delete state.completions[key]; });
-      localSave();
-      if (state.cloudReady) {
-        const { error } = await state.client.from('recurring_blocks').delete().eq('id', id).eq('user_id', state.user.id);
-        if (error) console.error(error);
-      }
-      closeBlockModal();
-      render();
-      showToast('تم حذف التكرار بالكامل.');
-    }
-
-    async function saveCompletion(blockId, status, taskChecks = null) {
+    async function saveCompletion(blockId, status) {
       const day = dateKey();
-      const current = getCompletion(blockId, day);
-      const cleanStatus = status || current.status || 'pending';
-      const checks = taskChecks || current.task_checks || {};
-      state.completions[overrideKey(blockId, day)] = { status: cleanStatus, task_checks: checks };
+      const key = `${blockId}_${day}`;
+      state.completions[key] = status;
       localSave();
       if (state.cloudReady) {
         const { error } = await state.client.from('block_completions').upsert({
           user_id: state.user.id,
           recurring_block_id: blockId,
           completion_date: day,
-          status: cleanStatus,
-          task_checks: checks,
+          status,
           checked_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }, { onConflict: 'recurring_block_id,completion_date' });
         if (error) { console.error(error); showToast('لم يتم حفظ الحالة على Supabase.'); }
       }
       render();
-    }
-
-    async function toggleTask(block, taskId, checked) {
-      const checks = { ...getTaskChecks(block.id) };
-      checks[taskId] = checked;
-      const tasks = block.tasks || [];
-      const allDone = tasks.length > 0 && tasks.every(t => checks[t.id] === true);
-      const anyDone = tasks.some(t => checks[t.id] === true);
-      let status = getStatus(block.id);
-      if (allDone) status = 'done';
-      else if (status === 'done' && anyDone) status = 'pending';
-      await saveCompletion(block.id, status, checks);
     }
 
     async function resetTodayStatuses() {
@@ -1501,26 +1141,8 @@ using (auth.uid() = user_id);`;
       showToast('تم تصفير حالة اليوم.');
     }
 
-    function materializeBlock(block, day = dateKey()) {
-      const base = normalizeBlock(block);
-      if (base.is_active === false) return null;
-      if ((base.repeat_mode || 'everyday') === 'once' && base.block_date !== day) return null;
-      if ((base.repeat_mode || 'everyday') === 'once') return { ...base, _date: day, _isInstance: false };
-      const ov = state.overrides[overrideKey(base.id, day)];
-      if (ov?.is_deleted) return null;
-      const merged = { ...base };
-      ['title','notes','start_time','end_time','color','position_x','position_y','width','height','highlight_enabled','tasks'].forEach(k => {
-        if (ov && ov[k] !== undefined && ov[k] !== null) merged[k] = ov[k];
-      });
-      merged.tasks = normalizeTasks(merged.tasks);
-      return { ...merged, _date: day, _isInstance: true, _override: ov || null };
-    }
-
-    function visibleBlocksForDate(day = dateKey()) {
-      return state.blocks
-        .map(b => materializeBlock(b, day))
-        .filter(Boolean)
-        .sort((a,b) => (a.start_time || '').localeCompare(b.start_time || ''));
+    function sortedBlocks() {
+      return state.blocks.filter(b => b.is_active !== false).sort((a,b) => (a.start_time || '').localeCompare(b.start_time || ''));
     }
 
     function updateHeader() {
@@ -1542,16 +1164,16 @@ using (auth.uid() = user_id);`;
 
     function render() {
       updateHeader();
-      const blocks = visibleBlocksForDate();
+      const blocks = sortedBlocks();
       updateStats(blocks);
       if (state.view === 'board') renderBoard(blocks);
       if (state.view === 'today') renderList(blocks);
-      if (state.view === 'week') renderWeek();
+      if (state.view === 'week') renderWeek(blocks);
     }
 
     function renderBoard(blocks) {
       els.viewTitle.textContent = 'البورد المرن';
-      els.viewHint.textContent = 'اسحب البلوكات في أي مكان. التكرار منفصل: تعديل اليوم لا يؤثر على باقي الأيام.';
+      els.viewHint.textContent = 'اسحب البلوكات في أي مكان. الـ snapping مخفي ومفيش خطوط ساعات.';
       els.contentArea.innerHTML = `<div class="board" id="board"></div>`;
       const board = document.getElementById('board');
       if (!blocks.length) board.innerHTML = emptyHTML();
@@ -1559,59 +1181,27 @@ using (auth.uid() = user_id);`;
     }
 
     function emptyHTML() {
-      return `<div class="empty-state"><div class="box"><h3>ابدأ أول بلوك</h3><p>اضغط إضافة بلوك وحدد هل يتكرر كل يوم أو يظهر في اليوم ده فقط. أي تعديل على بلوك متكرر بيكون لليوم الحالي فقط.</p></div></div>`;
-    }
-
-    function renderNotesAndTasks(container, block) {
-      const notes = document.createElement('p');
-      notes.className = 'block-notes';
-      notes.textContent = block.notes || ((block.tasks || []).length ? '' : 'بدون ملاحظات');
-      container.appendChild(notes);
-      if ((block.tasks || []).length) {
-        const list = document.createElement('div');
-        list.className = 'task-list';
-        const checks = getTaskChecks(block.id, block._date || dateKey());
-        block.tasks.forEach(task => {
-          const label = document.createElement('label');
-          label.className = 'task-check';
-          const input = document.createElement('input');
-          input.type = 'checkbox';
-          input.checked = checks[task.id] === true;
-          input.addEventListener('change', () => toggleTask(block, task.id, input.checked));
-          const span = document.createElement('span');
-          span.textContent = task.text;
-          label.appendChild(input);
-          label.appendChild(span);
-          list.appendChild(label);
-        });
-        container.appendChild(list);
-      }
+      return `<div class="empty-state"><div class="box"><h3>ابدأ أول بلوك</h3><p>اضغط إضافة بلوك وحدد الوقت والملاحظات. البلوك هيتكرر تلقائيًا كل يوم.</p></div></div>`;
     }
 
     function createBlockCard(block, board) {
-      const status = getStatus(block.id, block._date || dateKey());
+      const status = getStatus(block.id);
       const card = document.createElement('article');
-      card.className = `block-card ${status === 'done' ? 'done' : ''} ${status === 'missed' ? 'missed' : ''} ${block.highlight_enabled !== false ? 'highlight' : ''}`;
+      card.className = `block-card ${status === 'done' ? 'done' : ''} ${status === 'missed' ? 'missed' : ''}`;
       card.style.setProperty('--block-color', block.color);
       card.style.width = `${block.width || 330}px`;
       card.style.minHeight = `${block.height || 172}px`;
-      const initialW = Math.min(block.width || 330, Math.max(260, board.clientWidth - 16));
-      const initialH = block.height || 172;
-      const initialX = clamp(block.position_x ?? 20, 8, Math.max(8, board.clientWidth - initialW - 8));
-      const initialY = clamp(block.position_y ?? 20, 8, Math.max(8, board.clientHeight - initialH - 8));
-      block.position_x = initialX;
-      block.position_y = initialY;
-      card.style.transform = `translate3d(${initialX}px, ${initialY}px, 0)`;
+      card.style.transform = `translate(${block.position_x || 20}px, ${block.position_y || 20}px)`;
       card.dataset.id = block.id;
-      const repeatLabel = (block.repeat_mode || 'everyday') === 'everyday' ? 'يتكرر يوميًا' : 'اليوم فقط';
       card.innerHTML = `
         <div class="block-content">
           <div class="block-top">
             <h4 class="block-title"></h4>
             <button class="drag-handle" type="button" title="Drag">⌘</button>
           </div>
-          <div class="pill-row"><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span><span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span><span class="repeat-pill">${repeatLabel}</span></div>
-          <div class="notes-slot"></div>
+          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span></div>
+          <p class="block-notes"></p>
+          <div><span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span></div>
           <div class="block-actions">
             <button class="mini-btn done-btn" type="button" data-action="done">✓ عملت</button>
             <button class="mini-btn miss-btn" type="button" data-action="missed">✕ ماتعملش</button>
@@ -1620,7 +1210,7 @@ using (auth.uid() = user_id);`;
           </div>
         </div>`;
       card.querySelector('.block-title').textContent = block.title;
-      renderNotesAndTasks(card.querySelector('.notes-slot'), block);
+      card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
       card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
       card.querySelector('[data-action="missed"]').onclick = () => saveCompletion(block.id, 'missed');
       card.querySelector('[data-action="pending"]').onclick = () => saveCompletion(block.id, 'pending');
@@ -1633,21 +1223,17 @@ using (auth.uid() = user_id);`;
       let startX = 0, startY = 0, originX = 0, originY = 0, dragging = false;
       const handle = card.querySelector('.drag-handle');
       const onPointerDown = (e) => {
-        if (e.target.closest('[data-action], .task-check')) return;
-        e.preventDefault();
+        if (e.target.closest('[data-action]')) return;
         dragging = true;
         card.classList.add('dragging');
         startX = e.clientX;
         startY = e.clientY;
-        originX = block.position_x ?? 20;
-        originY = block.position_y ?? 20;
-        document.addEventListener('pointermove', onPointerMove, { passive: false });
-        document.addEventListener('pointerup', onPointerUp, { once: true });
-        document.addEventListener('pointercancel', onPointerUp, { once: true });
+        originX = block.position_x || 20;
+        originY = block.position_y || 20;
+        card.setPointerCapture?.(e.pointerId);
       };
       const onPointerMove = (e) => {
         if (!dragging) return;
-        e.preventDefault();
         const rect = board.getBoundingClientRect();
         const w = card.offsetWidth;
         const h = card.offsetHeight;
@@ -1657,21 +1243,24 @@ using (auth.uid() = user_id);`;
         y = clamp(y, 8, Math.max(8, rect.height - h - 8));
         block.position_x = x;
         block.position_y = y;
-        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        card.style.transform = `translate(${x}px, ${y}px)`;
       };
-      const onPointerUp = async () => {
+      const onPointerUp = async (e) => {
         if (!dragging) return;
         dragging = false;
         card.classList.remove('dragging');
-        document.removeEventListener('pointermove', onPointerMove);
-        await saveVisibleBlock(block, { position_x: block.position_x, position_y: block.position_y });
+        card.releasePointerCapture?.(e.pointerId);
+        await saveBlock(block);
       };
       handle.addEventListener('pointerdown', onPointerDown);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerup', onPointerUp);
+      card.addEventListener('pointercancel', onPointerUp);
     }
 
     function renderList(blocks) {
       els.viewTitle.textContent = 'قائمة اليوم';
-      els.viewHint.textContent = 'أفضل وضع للموبايل: كروت كبيرة وواضحة مع Done / Missed و Subtasks.';
+      els.viewHint.textContent = 'أفضل وضع للموبايل: كروت كبيرة وواضحة مع Done / Missed.';
       const list = document.createElement('div');
       list.className = 'list-view';
       if (!blocks.length) {
@@ -1679,15 +1268,14 @@ using (auth.uid() = user_id);`;
         return;
       }
       blocks.forEach(block => {
-        const status = getStatus(block.id, block._date || dateKey());
+        const status = getStatus(block.id);
         const card = document.createElement('article');
-        card.className = `list-card ${status} ${block.highlight_enabled !== false ? 'highlight' : ''}`;
+        card.className = `list-card ${status}`;
         card.style.setProperty('--block-color', block.color);
-        const repeatLabel = (block.repeat_mode || 'everyday') === 'everyday' ? 'يتكرر يوميًا' : 'اليوم فقط';
         card.innerHTML = `
           <h4 class="block-title"></h4>
-          <div class="pill-row"><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span><span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span><span class="repeat-pill">${repeatLabel}</span></div>
-          <div class="notes-slot"></div>
+          <div><span class="time-pill">${toTime(block.start_time)} - ${toTime(block.end_time)}</span> <span class="status-pill">${status === 'done' ? '✓ Done' : status === 'missed' ? '✕ Missed' : 'Pending'}</span></div>
+          <p class="block-notes"></p>
           <div class="block-actions">
             <button class="mini-btn done-btn" data-action="done">✓ عملت</button>
             <button class="mini-btn miss-btn" data-action="missed">✕ ماتعملش</button>
@@ -1695,7 +1283,7 @@ using (auth.uid() = user_id);`;
             <button class="mini-btn" data-action="edit">تعديل</button>
           </div>`;
         card.querySelector('.block-title').textContent = block.title;
-        renderNotesAndTasks(card.querySelector('.notes-slot'), block);
+        card.querySelector('.block-notes').textContent = block.notes || 'بدون ملاحظات';
         card.querySelector('[data-action="done"]').onclick = () => saveCompletion(block.id, 'done');
         card.querySelector('[data-action="missed"]').onclick = () => saveCompletion(block.id, 'missed');
         card.querySelector('[data-action="pending"]').onclick = () => saveCompletion(block.id, 'pending');
@@ -1706,9 +1294,9 @@ using (auth.uid() = user_id);`;
       els.contentArea.appendChild(list);
     }
 
-    function renderWeek() {
+    function renderWeek(blocks) {
       els.viewTitle.textContent = 'Week View';
-      els.viewHint.textContent = 'كل يوم منفصل: لو عدلت أو حذفت بلوك في يوم، باقي الأيام لا تتأثر.';
+      els.viewHint.textContent = 'نظرة سريعة على البلوكات المتكررة خلال الأسبوع.';
       const start = new Date(state.currentDate);
       start.setDate(start.getDate() - start.getDay());
       const grid = document.createElement('div');
@@ -1716,14 +1304,12 @@ using (auth.uid() = user_id);`;
       for (let i = 0; i < 7; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
-        const day = dateKey(d);
         const col = document.createElement('div');
         col.className = 'day-column';
         col.innerHTML = `<h4>${d.toLocaleDateString('ar-EG', { weekday:'short', day:'numeric', month:'short' })}</h4>`;
-        visibleBlocksForDate(day).forEach(block => {
-          const status = getStatus(block.id, day);
+        blocks.forEach(block => {
           const mini = document.createElement('div');
-          mini.className = `week-mini-block ${status}`;
+          mini.className = 'week-mini-block';
           mini.style.borderInlineStart = `6px solid ${block.color}`;
           mini.innerHTML = `<strong></strong><span>${toTime(block.start_time)} - ${toTime(block.end_time)}</span>`;
           mini.querySelector('strong').textContent = block.title;
@@ -1735,48 +1321,16 @@ using (auth.uid() = user_id);`;
       els.contentArea.appendChild(grid);
     }
 
-    function addTaskInput(text = '', id = uid()) {
-      const row = document.createElement('div');
-      row.className = 'task-editor-row';
-      row.dataset.taskId = id;
-      row.innerHTML = `<input class="task-input" placeholder="مثال: أراجع ملف العميل" /><button type="button" class="mini-btn remove-task-btn">حذف</button>`;
-      row.querySelector('.task-input').value = text;
-      row.querySelector('.remove-task-btn').onclick = () => row.remove();
-      els.tasksEditor.appendChild(row);
-    }
-
-    function setTasksEditor(tasks) {
-      els.tasksEditor.innerHTML = '';
-      normalizeTasks(tasks).forEach(t => addTaskInput(t.text, t.id));
-    }
-
-    function readTasksFromEditor() {
-      return [...els.tasksEditor.querySelectorAll('.task-editor-row')]
-        .map(row => ({ id: row.dataset.taskId || uid(), text: row.querySelector('.task-input').value.trim() }))
-        .filter(t => t.text);
-    }
-
-    function getVisibleBlockById(id) {
-      return visibleBlocksForDate().find(b => b.id === id) || state.blocks.find(b => b.id === id) || null;
-    }
-
     function openBlockModal(id = null) {
       state.editingId = id;
-      const block = id ? getVisibleBlockById(id) : null;
-      const base = id ? state.blocks.find(b => b.id === id) : null;
+      const block = id ? state.blocks.find(b => b.id === id) : null;
       els.modalTitle.textContent = block ? 'تعديل البلوك' : 'إضافة بلوك';
       els.blockTitle.value = block?.title || '';
       els.startTime.value = toTime(block?.start_time) || '09:00';
       els.endTime.value = toTime(block?.end_time) || '10:00';
       els.blockNotes.value = block?.notes || '';
       els.blockColor.value = block?.color || COLORS[state.blocks.length % COLORS.length];
-      els.repeatMode.value = block?.repeat_mode || 'everyday';
-      els.repeatMode.disabled = !!block;
-      els.highlightToggle.checked = block?.highlight_enabled !== false;
-      setTasksEditor(block?.tasks || []);
       els.deleteBlockBtn.classList.toggle('hidden', !block);
-      els.deleteBlockBtn.textContent = base?.repeat_mode === 'everyday' ? 'حذف من هذا اليوم فقط' : 'حذف البلوك';
-      els.deleteSeriesBtn.classList.toggle('hidden', !(block && base?.repeat_mode === 'everyday'));
       els.blockModal.classList.remove('hidden');
       setTimeout(() => els.blockTitle.focus(), 50);
     }
@@ -1784,48 +1338,30 @@ using (auth.uid() = user_id);`;
     function closeBlockModal() {
       els.blockModal.classList.add('hidden');
       state.editingId = null;
-      els.repeatMode.disabled = false;
       els.blockForm.reset();
-      setTasksEditor([]);
     }
 
     async function handleBlockSubmit(e) {
       e.preventDefault();
-      const title = els.blockTitle.value.trim();
-      if (!title) return showToast('اكتب اسم البلوك الأول.');
-      const data = {
-        title,
-        start_time: els.startTime.value,
-        end_time: els.endTime.value,
-        notes: els.blockNotes.value.trim(),
-        color: els.blockColor.value,
-        highlight_enabled: els.highlightToggle.checked,
-        tasks: readTasksFromEditor()
-      };
-      const existing = state.editingId ? getVisibleBlockById(state.editingId) : null;
-      const base = state.editingId ? state.blocks.find(b => b.id === state.editingId) : null;
-      if (existing && base) {
-        await saveVisibleBlock(existing, data);
-        closeBlockModal();
-        render();
-        showToast(base.repeat_mode === 'everyday' ? 'تم تعديل بلوك اليوم فقط. باقي الأيام لم تتغير.' : 'تم تعديل البلوك.');
-        return;
-      }
-      const block = normalizeBlock({
+      const existing = state.editingId ? state.blocks.find(b => b.id === state.editingId) : null;
+      const block = existing || {
         id: uid(),
-        ...data,
-        repeat_mode: els.repeatMode.value,
-        block_date: els.repeatMode.value === 'once' ? dateKey() : null,
         position_x: 20 + (state.blocks.length % 3) * 360,
         position_y: 20 + Math.floor(state.blocks.length / 3) * 215,
         width: 330,
         height: 172,
         is_active: true
-      });
-      await saveBaseBlock(block);
+      };
+      block.title = els.blockTitle.value.trim();
+      block.start_time = els.startTime.value;
+      block.end_time = els.endTime.value;
+      block.notes = els.blockNotes.value.trim();
+      block.color = els.blockColor.value;
+      if (!existing) state.blocks.push(block);
+      await saveBlock(block);
       closeBlockModal();
       render();
-      showToast(block.repeat_mode === 'everyday' ? 'تم إضافة البلوك وهيظهر كل يوم، لكن كل يوم مستقل.' : 'تم إضافة البلوك لليوم الحالي فقط.');
+      showToast(existing ? 'تم تعديل البلوك.' : 'تم إضافة البلوك وهيتكرر كل يوم.');
     }
 
     function changeDate(delta) {
@@ -1838,6 +1374,7 @@ using (auth.uid() = user_id);`;
     function openSettings() {
       els.supabaseUrl.value = localStorage.getItem('tb_supabase_url') || DEFAULT_SUPABASE_URL || '';
       els.supabaseKey.value = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
+      els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL || '';
       els.sqlBox.textContent = SQL_SCHEMA;
       els.settingsModal.classList.remove('hidden');
     }
@@ -1847,9 +1384,33 @@ using (auth.uid() = user_id);`;
     async function saveSupabaseConfig() {
       localStorage.setItem('tb_supabase_url', els.supabaseUrl.value.trim());
       localStorage.setItem('tb_supabase_key', els.supabaseKey.value.trim());
+      if (els.loginEmail?.value) localStorage.setItem('tb_login_email', els.loginEmail.value.trim());
       await initCloud();
       showToast('تم حفظ إعدادات Supabase.');
       render();
+    }
+
+    async function loginWithPassword() {
+      await saveSupabaseConfig();
+      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
+      const email = els.loginEmail.value.trim();
+      const password = els.loginPassword.value;
+      if (!email || !password) return showToast('اكتب الإيميل والباسورد الأول.');
+      const { error } = await state.client.auth.signInWithPassword({ email, password });
+      if (error) return showToast(error.message);
+      showToast('تم تسجيل الدخول بالباسورد.');
+    }
+
+    async function signupWithPassword() {
+      await saveSupabaseConfig();
+      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
+      const email = els.loginEmail.value.trim();
+      const password = els.loginPassword.value;
+      if (!email || !password) return showToast('اكتب الإيميل والباسورد الأول.');
+      if (password.length < 6) return showToast('الباسورد لازم يكون 6 حروف أو أكتر.');
+      const { error } = await state.client.auth.signUp({ email, password });
+      if (error) return showToast(error.message);
+      showToast('تم إنشاء الحساب. لو تأكيد الإيميل مقفول هتتسجل فورًا، ولو مفتوح راجع الميل مرة واحدة فقط.');
     }
 
     async function sendMagicLink() {
@@ -1897,13 +1458,13 @@ using (auth.uid() = user_id);`;
       document.getElementById('openSettingsBtn').onclick = openSettings;
       document.getElementById('settingsBtnTop').onclick = openSettings;
       document.getElementById('saveSupabaseBtn').onclick = saveSupabaseConfig;
+      document.getElementById('passwordLoginBtn').onclick = loginWithPassword;
+      document.getElementById('passwordSignupBtn').onclick = signupWithPassword;
       document.getElementById('sendMagicBtn').onclick = sendMagicLink;
       document.getElementById('logoutBtn').onclick = logout;
       document.getElementById('clearCloudConfigBtn').onclick = clearCloudConfig;
       els.blockForm.addEventListener('submit', handleBlockSubmit);
-      els.addTaskBtn.onclick = () => addTaskInput();
       els.deleteBlockBtn.onclick = () => state.editingId && deleteBlock(state.editingId);
-      els.deleteSeriesBtn.onclick = () => state.editingId && deleteSeries(state.editingId);
       document.querySelectorAll('[data-close-modal]').forEach(btn => btn.onclick = closeBlockModal);
       document.querySelectorAll('[data-close-settings]').forEach(btn => btn.onclick = closeSettings);
       document.querySelectorAll('[data-view-btn]').forEach(btn => btn.onclick = () => {
@@ -1928,7 +1489,6 @@ using (auth.uid() = user_id);`;
     }
 
     boot();
-
   </script>
 </body>
 </html>
