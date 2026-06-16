@@ -510,8 +510,8 @@
       </div>
 
       <div class="settings-section">
-        <h4>ربط Supabase</h4>
-        <p>علشان الداتا تسمع على الكمبيوتر والموبايل: شغل SQL الموجود تحت، وبعدها سجل دخول بالباسورد.</p>
+        <h4>ربط Supabase مباشر</h4>
+        <p>النسخة دي بتشتغل دايركت على Supabase من غير إيميل ولا باسورد. شغل SQL الموجود تحت مرة واحدة، وبعدها الصفحة هتعمل Cloud Sync تلقائي من الكمبيوتر والموبايل.</p>
         <div class="form-grid">
           <div class="form-row full">
             <label for="supabaseUrl">Supabase URL</label>
@@ -522,20 +522,13 @@
             <textarea id="supabaseKey" dir="ltr" placeholder="anon public key"></textarea>
           </div>
           <div class="form-row full">
-            <label for="loginEmail">Email</label>
-            <input id="loginEmail" type="email" dir="ltr" placeholder="you@email.com" />
-          </div>
-          <div class="form-row full">
-            <label for="loginPassword">Password</label>
-            <input id="loginPassword" type="password" dir="ltr" placeholder="اكتب الباسورد" autocomplete="current-password" />
+            <label>Direct Owner ID</label>
+            <input value="df0d8bf9-4474-4cb2-801b-a50679858740" dir="ltr" readonly />
+            <p class="form-hint">كل الأجهزة هتقرأ وتكتب على نفس مساحة البيانات دي مباشرة.</p>
           </div>
         </div>
         <div class="modal-actions">
-          <button class="primary-btn" id="passwordLoginBtn" type="button">دخول بالباسورد</button>
-          <button class="soft-btn" id="passwordSignupBtn" type="button">إنشاء حساب بالباسورد</button>
-          <button class="soft-btn" id="saveSupabaseBtn" type="button">حفظ إعدادات Supabase</button>
-          <button class="soft-btn" id="sendMagicBtn" type="button">Magic Link احتياطي</button>
-          <button class="soft-btn" id="logoutBtn" type="button">تسجيل خروج</button>
+          <button class="primary-btn" id="saveSupabaseBtn" type="button">حفظ وربط Supabase مباشر</button>
           <button class="soft-btn" id="clearCloudConfigBtn" type="button">Local Mode</button>
         </div>
       </div>
@@ -553,9 +546,13 @@
   <script>
     const SQL_SCHEMA = `create type if not exists block_status as enum ('pending', 'done', 'missed');
 
+-- Direct Supabase mode without email/password.
+-- All devices will use this same owner id:
+-- df0d8bf9-4474-4cb2-801b-a50679858740
+
 create table if not exists public.recurring_blocks (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid not null,
   title text not null,
   notes text default '',
   period_label text default '',
@@ -576,18 +573,9 @@ create table if not exists public.recurring_blocks (
   updated_at timestamptz default now()
 );
 
-alter table public.recurring_blocks drop constraint if exists recurring_blocks_repeat_mode_check;
-alter table public.recurring_blocks add constraint recurring_blocks_repeat_mode_check check (repeat_mode in ('everyday','once','custom'));
-alter table public.recurring_blocks add column if not exists repeat_mode text not null default 'everyday';
-alter table public.recurring_blocks add column if not exists block_date date;
-alter table public.recurring_blocks add column if not exists tasks jsonb not null default '[]'::jsonb;
-alter table public.recurring_blocks add column if not exists period_label text default '';
-alter table public.recurring_blocks add column if not exists days_of_week smallint[] not null default array[0,1,2,3,4,5,6];
-alter table public.recurring_blocks add column if not exists sort_order integer default 0;
-
 create table if not exists public.block_overrides (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid not null,
   recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
   override_date date not null,
   title text,
@@ -609,7 +597,7 @@ create table if not exists public.block_overrides (
 
 create table if not exists public.block_completions (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid not null,
   recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
   completion_date date not null,
   status block_status not null default 'pending',
@@ -621,7 +609,7 @@ create table if not exists public.block_completions (
 
 create table if not exists public.task_checks (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid not null,
   recurring_block_id uuid not null references public.recurring_blocks(id) on delete cascade,
   task_id text not null,
   check_date date not null,
@@ -630,9 +618,31 @@ create table if not exists public.task_checks (
   unique(recurring_block_id, task_id, check_date)
 );
 
-alter table public.recurring_blocks enable row level security;
-alter table public.block_overrides add column if not exists period_label text;
+-- Upgrade old versions safely
+alter table public.recurring_blocks drop constraint if exists recurring_blocks_user_id_fkey;
+alter table public.block_overrides drop constraint if exists block_overrides_user_id_fkey;
+alter table public.block_completions drop constraint if exists block_completions_user_id_fkey;
+alter table public.task_checks drop constraint if exists task_checks_user_id_fkey;
 
+alter table public.recurring_blocks drop constraint if exists recurring_blocks_repeat_mode_check;
+alter table public.recurring_blocks add constraint recurring_blocks_repeat_mode_check check (repeat_mode in ('everyday','once','custom'));
+alter table public.recurring_blocks add column if not exists repeat_mode text not null default 'everyday';
+alter table public.recurring_blocks add column if not exists block_date date;
+alter table public.recurring_blocks add column if not exists tasks jsonb not null default '[]'::jsonb;
+alter table public.recurring_blocks add column if not exists period_label text default '';
+alter table public.recurring_blocks add column if not exists days_of_week smallint[] not null default array[0,1,2,3,4,5,6];
+alter table public.recurring_blocks add column if not exists sort_order integer default 0;
+
+alter table public.block_overrides add column if not exists period_label text;
+alter table public.block_overrides add column if not exists tasks jsonb;
+
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on public.recurring_blocks to anon, authenticated;
+grant select, insert, update, delete on public.block_overrides to anon, authenticated;
+grant select, insert, update, delete on public.block_completions to anon, authenticated;
+grant select, insert, update, delete on public.task_checks to anon, authenticated;
+
+alter table public.recurring_blocks enable row level security;
 alter table public.block_overrides enable row level security;
 alter table public.block_completions enable row level security;
 alter table public.task_checks enable row level security;
@@ -641,43 +651,60 @@ drop policy if exists "Users can view own recurring blocks" on public.recurring_
 drop policy if exists "Users can insert own recurring blocks" on public.recurring_blocks;
 drop policy if exists "Users can update own recurring blocks" on public.recurring_blocks;
 drop policy if exists "Users can delete own recurring blocks" on public.recurring_blocks;
-create policy "Users can view own recurring blocks" on public.recurring_blocks for select using (auth.uid() = user_id);
-create policy "Users can insert own recurring blocks" on public.recurring_blocks for insert with check (auth.uid() = user_id);
-create policy "Users can update own recurring blocks" on public.recurring_blocks for update using (auth.uid() = user_id);
-create policy "Users can delete own recurring blocks" on public.recurring_blocks for delete using (auth.uid() = user_id);
+drop policy if exists "Direct owner can view recurring blocks" on public.recurring_blocks;
+drop policy if exists "Direct owner can insert recurring blocks" on public.recurring_blocks;
+drop policy if exists "Direct owner can update recurring blocks" on public.recurring_blocks;
+drop policy if exists "Direct owner can delete recurring blocks" on public.recurring_blocks;
+create policy "Direct owner can view recurring blocks" on public.recurring_blocks for select using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can insert recurring blocks" on public.recurring_blocks for insert with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can update recurring blocks" on public.recurring_blocks for update using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid) with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can delete recurring blocks" on public.recurring_blocks for delete using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
 
 drop policy if exists "Users can view own overrides" on public.block_overrides;
 drop policy if exists "Users can insert own overrides" on public.block_overrides;
 drop policy if exists "Users can update own overrides" on public.block_overrides;
 drop policy if exists "Users can delete own overrides" on public.block_overrides;
-create policy "Users can view own overrides" on public.block_overrides for select using (auth.uid() = user_id);
-create policy "Users can insert own overrides" on public.block_overrides for insert with check (auth.uid() = user_id);
-create policy "Users can update own overrides" on public.block_overrides for update using (auth.uid() = user_id);
-create policy "Users can delete own overrides" on public.block_overrides for delete using (auth.uid() = user_id);
+drop policy if exists "Direct owner can view overrides" on public.block_overrides;
+drop policy if exists "Direct owner can insert overrides" on public.block_overrides;
+drop policy if exists "Direct owner can update overrides" on public.block_overrides;
+drop policy if exists "Direct owner can delete overrides" on public.block_overrides;
+create policy "Direct owner can view overrides" on public.block_overrides for select using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can insert overrides" on public.block_overrides for insert with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can update overrides" on public.block_overrides for update using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid) with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can delete overrides" on public.block_overrides for delete using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
 
 drop policy if exists "Users can view own completions" on public.block_completions;
 drop policy if exists "Users can insert own completions" on public.block_completions;
 drop policy if exists "Users can update own completions" on public.block_completions;
 drop policy if exists "Users can delete own completions" on public.block_completions;
-create policy "Users can view own completions" on public.block_completions for select using (auth.uid() = user_id);
-create policy "Users can insert own completions" on public.block_completions for insert with check (auth.uid() = user_id);
-create policy "Users can update own completions" on public.block_completions for update using (auth.uid() = user_id);
-create policy "Users can delete own completions" on public.block_completions for delete using (auth.uid() = user_id);
+drop policy if exists "Direct owner can view completions" on public.block_completions;
+drop policy if exists "Direct owner can insert completions" on public.block_completions;
+drop policy if exists "Direct owner can update completions" on public.block_completions;
+drop policy if exists "Direct owner can delete completions" on public.block_completions;
+create policy "Direct owner can view completions" on public.block_completions for select using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can insert completions" on public.block_completions for insert with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can update completions" on public.block_completions for update using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid) with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can delete completions" on public.block_completions for delete using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
 
 drop policy if exists "Users can view own task checks" on public.task_checks;
 drop policy if exists "Users can insert own task checks" on public.task_checks;
 drop policy if exists "Users can update own task checks" on public.task_checks;
 drop policy if exists "Users can delete own task checks" on public.task_checks;
-create policy "Users can view own task checks" on public.task_checks for select using (auth.uid() = user_id);
-create policy "Users can insert own task checks" on public.task_checks for insert with check (auth.uid() = user_id);
-create policy "Users can update own task checks" on public.task_checks for update using (auth.uid() = user_id);
-create policy "Users can delete own task checks" on public.task_checks for delete using (auth.uid() = user_id);`;
+drop policy if exists "Direct owner can view task checks" on public.task_checks;
+drop policy if exists "Direct owner can insert task checks" on public.task_checks;
+drop policy if exists "Direct owner can update task checks" on public.task_checks;
+drop policy if exists "Direct owner can delete task checks" on public.task_checks;
+create policy "Direct owner can view task checks" on public.task_checks for select using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can insert task checks" on public.task_checks for insert with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can update task checks" on public.task_checks for update using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid) with check (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);
+create policy "Direct owner can delete task checks" on public.task_checks for delete using (user_id = 'df0d8bf9-4474-4cb2-801b-a50679858740'::uuid);`;
 
     const COLORS = ['#6366f1', '#0ea5e9', '#ec4899', '#22c55e', '#f97316', '#a855f7', '#14b8a6', '#f43f5e', '#84cc16', '#eab308', '#06b6d4', '#8b5cf6'];
     const SNAP = 16;
     const DEFAULT_SUPABASE_URL = 'https://shyzestwmrqgjxveqylo.supabase.co';
     const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoeXplc3R3bXJxZ2p4dmVxeWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjUwMjYsImV4cCI6MjA5NzEwMTAyNn0.Pi4e9N6bHPWcLR8fHQtRgOWwa3KbKPjghu1EGYRmYqE';
-    const DEFAULT_LOGIN_EMAIL = 'mohaesmat1719@gmail.com';
+    const DEFAULT_LOGIN_EMAIL = '';
+    const DIRECT_OWNER_ID = 'df0d8bf9-4474-4cb2-801b-a50679858740';
 
     const els = {
       body: document.body,
@@ -861,7 +888,7 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       els.syncText.textContent = text;
       if (els.settingsStatus) {
         els.settingsStatus.textContent = mode === 'cloud'
-          ? 'Cloud Mode: البيانات متزامنة مع Supabase للحساب الحالي.'
+          ? 'Direct Cloud Mode: البيانات متزامنة مباشرة مع Supabase من غير إيميل أو باسورد.'
           : 'Local Mode: البيانات محفوظة على نفس الجهاز فقط.';
       }
     }
@@ -938,7 +965,6 @@ create policy "Users can delete own task checks" on public.task_checks for delet
       const key = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
       els.supabaseUrl.value = url;
       els.supabaseKey.value = key;
-      els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL || '';
 
       if (!url || !key || !window.supabase) {
         state.client = null;
@@ -950,32 +976,17 @@ create policy "Users can delete own task checks" on public.task_checks for delet
 
       try {
         state.client = window.supabase.createClient(url, key);
-        const { data } = await state.client.auth.getSession();
-        state.user = data?.session?.user || null;
-        if (state.user) {
-          state.cloudReady = true;
-          setSyncStatus('cloud', 'Cloud Sync');
-          await loadCloudData();
-        } else {
-          state.cloudReady = false;
-          setSyncStatus('', 'Supabase غير مسجل');
-        }
-
-        state.client.auth.onAuthStateChange(async (_event, session) => {
-          state.user = session?.user || null;
-          state.cloudReady = !!state.user;
-          if (state.cloudReady) {
-            setSyncStatus('cloud', 'Cloud Sync');
-            await loadCloudData();
-          } else {
-            setSyncStatus('', 'Supabase غير مسجل');
-          }
-          render();
-        });
+        state.user = { id: DIRECT_OWNER_ID };
+        state.cloudReady = true;
+        setSyncStatus('cloud', 'Direct Supabase Sync');
+        await loadCloudData();
       } catch (err) {
         console.error(err);
+        state.client = null;
+        state.user = null;
+        state.cloudReady = false;
         setSyncStatus('offline', 'Local Mode');
-        showToast('في مشكلة في إعدادات Supabase، هنكمل Local.');
+        showToast('في مشكلة في الربط المباشر مع Supabase، هنكمل Local.');
       }
     }
 
@@ -1541,7 +1552,6 @@ function openBlockModal(id = null) {
     function openSettings() {
       els.supabaseUrl.value = localStorage.getItem('tb_supabase_url') || DEFAULT_SUPABASE_URL || '';
       els.supabaseKey.value = localStorage.getItem('tb_supabase_key') || DEFAULT_SUPABASE_ANON_KEY || '';
-      els.loginEmail.value = localStorage.getItem('tb_login_email') || DEFAULT_LOGIN_EMAIL || '';
       els.sqlBox.textContent = SQL_SCHEMA;
       els.settingsModal.classList.remove('hidden');
     }
@@ -1550,51 +1560,9 @@ function openBlockModal(id = null) {
     async function saveSupabaseConfig() {
       localStorage.setItem('tb_supabase_url', els.supabaseUrl.value.trim());
       localStorage.setItem('tb_supabase_key', els.supabaseKey.value.trim());
-      if (els.loginEmail?.value) localStorage.setItem('tb_login_email', els.loginEmail.value.trim());
       await initCloud();
-      showToast('تم حفظ إعدادات Supabase.');
+      showToast(state.cloudReady ? 'تم الربط المباشر مع Supabase.' : 'تم حفظ الإعدادات، لكن الربط لم يكتمل.');
       render();
-    }
-
-    async function loginWithPassword() {
-      await saveSupabaseConfig();
-      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
-      const email = els.loginEmail.value.trim();
-      const password = els.loginPassword.value;
-      if (!email || !password) return showToast('اكتب الإيميل والباسورد الأول.');
-      const { error } = await state.client.auth.signInWithPassword({ email, password });
-      if (error) return showToast(error.message);
-      showToast('تم تسجيل الدخول بالباسورد.');
-    }
-
-    async function signupWithPassword() {
-      await saveSupabaseConfig();
-      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
-      const email = els.loginEmail.value.trim();
-      const password = els.loginPassword.value;
-      if (!email || !password) return showToast('اكتب الإيميل والباسورد الأول.');
-      if (password.length < 6) return showToast('الباسورد لازم يكون 6 حروف أو أكتر.');
-      const { error } = await state.client.auth.signUp({ email, password });
-      if (error) return showToast(error.message);
-      showToast('تم إنشاء الحساب. لو تأكيد الإيميل مقفول هتتسجل فورًا.');
-    }
-
-    async function sendMagicLink() {
-      await saveSupabaseConfig();
-      if (!state.client) return showToast('حط Supabase URL و anon key الأول.');
-      const email = els.loginEmail.value.trim();
-      if (!email) return showToast('اكتب الإيميل الأول.');
-      const { error } = await state.client.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href.split('#')[0] } });
-      if (error) return showToast(error.message);
-      showToast('تم إرسال لينك الدخول على الإيميل.');
-    }
-
-    async function logout() {
-      if (state.client) await state.client.auth.signOut();
-      state.user = null;
-      state.cloudReady = false;
-      setSyncStatus('', 'Supabase غير مسجل');
-      showToast('تم تسجيل الخروج.');
     }
 
     function clearCloudConfig() {
@@ -1605,6 +1573,7 @@ function openBlockModal(id = null) {
       state.cloudReady = false;
       setSyncStatus('offline', 'Local Mode');
       showToast('رجعنا Local Mode.');
+      render();
     }
 
     function bindEvents() {
@@ -1620,10 +1589,6 @@ function openBlockModal(id = null) {
       document.getElementById('openSettingsBtn').onclick = openSettings;
       document.getElementById('settingsBtnTop').onclick = openSettings;
       document.getElementById('saveSupabaseBtn').onclick = saveSupabaseConfig;
-      document.getElementById('passwordLoginBtn').onclick = loginWithPassword;
-      document.getElementById('passwordSignupBtn').onclick = signupWithPassword;
-      document.getElementById('sendMagicBtn').onclick = sendMagicLink;
-      document.getElementById('logoutBtn').onclick = logout;
       document.getElementById('clearCloudConfigBtn').onclick = clearCloudConfig;
       if (els.repeatMode) els.repeatMode.onchange = updateRepeatDaysUI;
       els.addTaskLineBtn.onclick = () => { state.modalTasks.push({ id: taskId(), text: '' }); renderTasksEditor(); };
