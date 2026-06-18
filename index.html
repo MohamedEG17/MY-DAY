@@ -544,7 +544,12 @@
   <div id="toast" class="toast hidden"></div>
 
   <script>
-    const SQL_SCHEMA = `create type if not exists block_status as enum ('pending', 'done', 'missed');
+    const SQL_SCHEMA = `do $$
+begin
+  create type block_status as enum ('pending', 'done', 'missed');
+exception
+  when duplicate_object then null;
+end $$;
 
 -- Direct Supabase mode without email/password.
 -- All devices will use this same owner id:
@@ -992,24 +997,53 @@ create policy "Direct owner can delete task checks" on public.task_checks for de
 
     async function loadCloudData() {
       if (!state.client || !state.user) return;
+
+      // Important: keep the local copy safe before reading cloud.
+      // If Supabase is empty or not ready, we must not wipe the user's local blocks on refresh.
+      const localTemplatesSnapshot = [...state.templates];
+      const localOverridesSnapshot = { ...state.overrides };
+      const localCompletionsSnapshot = { ...state.completions };
+      const localTaskChecksSnapshot = { ...state.taskChecks };
+
       const { data: blocks, error: blocksError } = await state.client
         .from('recurring_blocks')
         .select('*')
         .eq('user_id', state.user.id)
         .eq('is_active', true)
         .order('created_at', { ascending: true });
+
       if (blocksError) {
         console.error(blocksError);
-        showToast('Supabase: شغل SQL الجديد من الإعدادات.');
+        state.cloudReady = false;
+        setSyncStatus('offline', 'Local Mode');
+        showToast('Supabase لسه مش جاهز. البيانات محفوظة محليًا، شغل SQL الجديد من الإعدادات.');
+        state.templates = localTemplatesSnapshot;
+        state.overrides = localOverridesSnapshot;
+        state.completions = localCompletionsSnapshot;
+        state.taskChecks = localTaskChecksSnapshot;
+        localSave();
         return;
       }
+
+      // If cloud has no blocks but the browser already has local data, upload local data instead of deleting it.
+      if ((!blocks || blocks.length === 0) && localTemplatesSnapshot.length > 0) {
+        state.templates = localTemplatesSnapshot;
+        state.overrides = localOverridesSnapshot;
+        state.completions = localCompletionsSnapshot;
+        state.taskChecks = localTaskChecksSnapshot;
+        localSave();
+        await syncLocalToCloud();
+        return;
+      }
+
       state.templates = (blocks || []).map(dbToTemplate);
 
-      const { data: overrides } = await state.client.from('block_overrides').select('*').eq('user_id', state.user.id);
+      const { data: overrides, error: overridesError } = await state.client.from('block_overrides').select('*').eq('user_id', state.user.id);
       state.overrides = {};
-      (overrides || []).forEach(o => {
+      if (!overridesError) (overrides || []).forEach(o => {
         state.overrides[overrideKey(o.recurring_block_id, o.override_date)] = {
           title: o.title,
+          period_label: o.period_label,
           notes: o.notes,
           start_time: o.start_time ? toTime(o.start_time) : null,
           end_time: o.end_time ? toTime(o.end_time) : null,
@@ -1023,22 +1057,67 @@ create policy "Direct owner can delete task checks" on public.task_checks for de
         };
       });
 
-      const { data: completions } = await state.client.from('block_completions').select('*').eq('user_id', state.user.id);
+      const { data: completions, error: completionsError } = await state.client.from('block_completions').select('*').eq('user_id', state.user.id);
       state.completions = {};
-      (completions || []).forEach(c => { state.completions[completionKey(c.recurring_block_id, c.completion_date)] = c.status; });
+      if (!completionsError) (completions || []).forEach(c => { state.completions[completionKey(c.recurring_block_id, c.completion_date)] = c.status; });
 
-      const { data: taskChecks } = await state.client.from('task_checks').select('*').eq('user_id', state.user.id);
+      const { data: taskChecks, error: taskChecksError } = await state.client.from('task_checks').select('*').eq('user_id', state.user.id);
       state.taskChecks = {};
-      (taskChecks || []).forEach(t => { state.taskChecks[taskKey(t.recurring_block_id, t.task_id, t.check_date)] = !!t.is_checked; });
+      if (!taskChecksError) (taskChecks || []).forEach(t => { state.taskChecks[taskKey(t.recurring_block_id, t.task_id, t.check_date)] = !!t.is_checked; });
 
       localSave();
+    }
+
+    async function syncLocalToCloud() {
+      if (!state.cloudReady || !state.client || !state.user) return;
+      try {
+        if (state.templates.length) {
+          const { error } = await state.client.from('recurring_blocks').upsert(state.templates.map(templateToDb));
+          if (error) throw error;
+        }
+        const overrideRows = Object.entries(state.overrides).map(([key, over]) => {
+          const [blockId, day] = key.split('_');
+          return overrideToDb(blockId, day, over);
+        });
+        if (overrideRows.length) {
+          const { error } = await state.client.from('block_overrides').upsert(overrideRows, { onConflict: 'recurring_block_id,override_date' });
+          if (error) throw error;
+        }
+        const completionRows = Object.entries(state.completions).map(([key, status]) => {
+          const [blockId, day] = key.split('_');
+          return { user_id: state.user.id, recurring_block_id: blockId, completion_date: day, status, checked_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+        });
+        if (completionRows.length) {
+          const { error } = await state.client.from('block_completions').upsert(completionRows, { onConflict: 'recurring_block_id,completion_date' });
+          if (error) throw error;
+        }
+        const taskRows = Object.entries(state.taskChecks).map(([key, checked]) => {
+          const [blockId, day, taskId] = key.split('_');
+          return { user_id: state.user.id, recurring_block_id: blockId, task_id: taskId, check_date: day, is_checked: !!checked, updated_at: new Date().toISOString() };
+        });
+        if (taskRows.length) {
+          const { error } = await state.client.from('task_checks').upsert(taskRows, { onConflict: 'recurring_block_id,task_id,check_date' });
+          if (error) throw error;
+        }
+        setSyncStatus('cloud', 'Direct Supabase Sync');
+      } catch (err) {
+        console.error(err);
+        state.cloudReady = false;
+        setSyncStatus('offline', 'Local Mode');
+        showToast('تعذر رفع البيانات لـ Supabase. البيانات محفوظة محليًا. تأكد إنك شغلت SQL الجديد.');
+      }
     }
 
     async function saveTemplate(block) {
       localSave();
       if (!state.cloudReady) return;
       const { error } = await state.client.from('recurring_blocks').upsert(templateToDb(block));
-      if (error) { console.error(error); showToast('لم يتم حفظ البلوك على Supabase. شغل SQL الجديد.'); }
+      if (error) {
+        console.error(error);
+        state.cloudReady = false;
+        setSyncStatus('offline', 'Local Mode');
+        showToast('اتحفظ محليًا فقط. شغل SQL الجديد عشان Supabase يحفظ.');
+      }
     }
 
     async function saveOverride(blockId, day, over) {
@@ -1046,7 +1125,7 @@ create policy "Direct owner can delete task checks" on public.task_checks for de
       localSave();
       if (!state.cloudReady) return;
       const { error } = await state.client.from('block_overrides').upsert(overrideToDb(blockId, day, state.overrides[overrideKey(blockId, day)]), { onConflict: 'recurring_block_id,override_date' });
-      if (error) { console.error(error); showToast('لم يتم حفظ تعديل اليوم على Supabase. شغل SQL الجديد.'); }
+      if (error) { console.error(error); state.cloudReady = false; setSyncStatus('offline', 'Local Mode'); showToast('اتحفظ محليًا فقط. شغل SQL الجديد عشان Supabase يحفظ.'); }
     }
 
     function getTemplate(id) { return state.templates.find(b => b.id === id); }
@@ -1146,7 +1225,7 @@ create policy "Direct owner can delete task checks" on public.task_checks for de
           checked_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }, { onConflict: 'recurring_block_id,completion_date' });
-        if (error) { console.error(error); showToast('لم يتم حفظ الحالة على Supabase.'); }
+        if (error) { console.error(error); state.cloudReady = false; setSyncStatus('offline', 'Local Mode'); showToast('اتحفظت الحالة محليًا فقط. شغل SQL الجديد.'); }
       }
       render();
     }
